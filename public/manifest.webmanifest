@@ -1,0 +1,21 @@
+{
+  "name": "Carpe Diem",
+  "short_name": "Carpe Diem",
+  "description": "A hand-drawn daily tracker for tasks, goals, habits and notes.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1f2421",
+  "theme_color": "#1f2421",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "any",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "any",
+      "type": "image/png"
+    }
+  ]
+}
