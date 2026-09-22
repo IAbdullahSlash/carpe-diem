@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   GoogleAuthProvider,
+  updateProfile,
   createUserWithEmailAndPassword,
   getRedirectResult,
   signInWithEmailAndPassword,
@@ -65,6 +66,9 @@ function AuthPage() {
           return;
         }
         const cred = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(cred.user, {
+          displayName: `${firstName.trim()} ${secondName.trim()}`,
+        });
         await setDoc(doc(db, "users", cred.user.uid), {
           firstName: firstName.trim(),
           secondName: secondName.trim(),

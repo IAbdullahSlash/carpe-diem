@@ -43,12 +43,13 @@ export function lastNDayKeys(n: number) {
   return out;
 }
 
-export function greetingFor(hour: number) {
-  if (hour < 5) return "Still up, Abdullah?";
-  if (hour < 12) return "Good morning, Abdullah";
-  if (hour < 17) return "Good afternoon, Abdullah";
-  if (hour < 21) return "Good evening, Abdullah";
-  return "Good night, Abdullah";
+export function greetingFor(hour: number, name?: string | null) {
+  const label = name?.trim() ?? "Abdullah";
+  if (hour < 5) return `Still up, ${label}?`;
+  if (hour < 12) return `Good morning, ${label}`;
+  if (hour < 17) return `Good afternoon, ${label}`;
+  if (hour < 21) return `Good evening, ${label}`;
+  return `Good night, ${label}`;
 }
 
 /** How many days of history the tracker keeps. */
