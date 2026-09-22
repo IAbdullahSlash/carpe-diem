@@ -9,7 +9,8 @@ import {
   signInWithPopup,
   signInWithRedirect,
 } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "@/lib/firebase";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
@@ -36,6 +37,9 @@ function AuthPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [secondName, setSecondName] = useState("");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -52,7 +56,21 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "signup") {
-        await createUserWithEmailAndPassword(auth, email, password);
+        if (!firstName.trim() || !secondName.trim()) {
+          toast.error("Please enter both first name and second name.");
+          return;
+        }
+        if (password !== confirmPassword) {
+          toast.error("Passwords do not match.");
+          return;
+        }
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        await setDoc(doc(db, "users", cred.user.uid), {
+          firstName: firstName.trim(),
+          secondName: secondName.trim(),
+          displayName: `${firstName.trim()} ${secondName.trim()}`,
+          createdAt: new Date().toISOString(),
+        });
         toast.success("Account created — you're in.");
       } else {
         await signInWithEmailAndPassword(auth, email, password);
@@ -96,6 +114,32 @@ function AuthPage() {
         </p>
 
         <form onSubmit={submit} className="mt-6 space-y-3">
+          {mode === "signup" && (
+            <>
+              <div className="grid grid-cols-2 gap-3">
+                <input
+                  type="text"
+                  required
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="First name"
+                  aria-label="First name"
+                  autoComplete="given-name"
+                  className="min-h-11 w-full rounded-full border-2 border-ink bg-transparent px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+                <input
+                  type="text"
+                  required
+                  value={secondName}
+                  onChange={(e) => setSecondName(e.target.value)}
+                  placeholder="Second name"
+                  aria-label="Second name"
+                  autoComplete="family-name"
+                  className="min-h-11 w-full rounded-full border-2 border-ink bg-transparent px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+              </div>
+            </>
+          )}
           <input
             type="email"
             required
@@ -117,6 +161,18 @@ function AuthPage() {
             autoComplete={mode === "signin" ? "current-password" : "new-password"}
             className="min-h-11 w-full rounded-full border-2 border-ink bg-transparent px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           />
+          {mode === "signup" && (
+            <input
+              type="password"
+              required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm password"
+              aria-label="Confirm password"
+              autoComplete="new-password"
+              className="min-h-11 w-full rounded-full border-2 border-ink bg-transparent px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+          )}
           <button
             type="submit"
             disabled={busy}
