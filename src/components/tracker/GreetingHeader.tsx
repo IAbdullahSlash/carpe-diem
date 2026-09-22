@@ -42,7 +42,7 @@ export function GreetingHeader() {
     // Read from Firestore profile — the source of truth after signup
     getDoc(doc(db, "users", user.uid))
       .then((snap) => {
-        if (snap.exists()) setDisplayName(snap.data().displayName ?? null);
+        if (snap.exists()) setDisplayName(snap.data()["displayName"] ?? null);
       })
       .catch(() => null);
   }, [user]);
