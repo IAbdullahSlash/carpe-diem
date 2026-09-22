@@ -1,11 +1,12 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { LogOut, Moon, Sun, SunMoon } from "lucide-react";
+import { doc, getDoc } from "firebase/firestore";
 import { cn } from "@/lib/utils";
 import { greetingFor } from "@/lib/time";
 import { useAsiaNow, useTheme, type ThemeMode } from "@/lib/use-theme";
 import { useAuthUser } from "@/hooks/use-auth";
-import { auth } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
 import { signOut } from "firebase/auth";
 import { QuoteCard } from "./QuoteCard";
 
@@ -28,7 +29,23 @@ export function GreetingHeader() {
   const { user } = useAuthUser();
   const navigate = useNavigate();
   const [mounted, setMounted] = useState(false);
+  const [displayName, setDisplayName] = useState<string | null>(null);
+
   useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    if (!user) return;
+    if (user.displayName) {
+      setDisplayName(user.displayName);
+      return;
+    }
+    // Read from Firestore profile — the source of truth after signup
+    getDoc(doc(db, "users", user.uid))
+      .then((snap) => {
+        if (snap.exists()) setDisplayName(snap.data().displayName ?? null);
+      })
+      .catch(() => null);
+  }, [user]);
 
   return (
     <header className="mx-auto w-full max-w-6xl px-4 pt-6 sm:px-6">
@@ -36,7 +53,7 @@ export function GreetingHeader() {
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4">
           <div className="min-w-0">
             <h1 className="hand text-3xl leading-tight sm:text-5xl">
-              <span className="marker">{greetingFor(hour, user?.displayName ?? null)}</span>
+              <span className="marker">{greetingFor(hour, displayName)}</span>
             </h1>
             <p className="mt-1 truncate text-xs text-muted-foreground sm:text-sm" suppressHydrationWarning>
               {longDate}
@@ -77,9 +94,9 @@ export function GreetingHeader() {
           </Link>
         ))}
         <div className="ml-auto flex items-center gap-2">
-          {user?.displayName ? (
+          {displayName ? (
             <span className="hidden max-w-[12rem] truncate text-xs text-muted-foreground sm:block">
-              {user.displayName}
+              {displayName}
             </span>
           ) : null}
           <button
