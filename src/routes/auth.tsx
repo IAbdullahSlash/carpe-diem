@@ -43,6 +43,8 @@ function AuthPage() {
   const [secondName, setSecondName] = useState("");
   const [busy, setBusy] = useState(false);
 
+  const [error, setError] = useState("");
+
   useEffect(() => {
     // Completes a Google sign-in that had to fall back to a full page redirect.
     void getRedirectResult(auth).catch(() => null);
@@ -55,6 +57,7 @@ function AuthPage() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
+    setError("");
     try {
       if (mode === "signup") {
         if (!firstName.trim() || !secondName.trim()) {
@@ -81,7 +84,10 @@ function AuthPage() {
       }
       await navigate({ to: "/" });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Could not sign in");
+      const raw = error instanceof Error ? error.message : "Could not sign in";
+      const message = raw.replace(/^Firebase:\s*/, "");
+      setError(message);
+      toast.error(message);
     } finally {
       setBusy(false);
     }
@@ -116,6 +122,12 @@ function AuthPage() {
             ? "Sign in to load your tasks, goals, habits and notes."
             : "Create your account to start tracking."}
         </p>
+
+        {error && (
+          <div className="mt-4 rounded-lg border-2 border-coral/60 bg-coral/15 px-4 py-3 text-sm text-foreground">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={submit} className="mt-6 space-y-3">
           {mode === "signup" && (
