@@ -1,7 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { Activity, BarChart3 } from "lucide-react";
 import { SketchCard } from "./SketchCard";
-import { useHabits, useHistory, useTasks, type DayRecord } from "@/lib/tracker-store";
+import {
+  useHabits,
+  useHistory,
+  useTasks,
+  useGoals,
+  streakOf,
+  type DayRecord,
+} from "@/lib/tracker-store";
 import {
   HISTORY_DAYS,
   asiaDayKey,
@@ -51,14 +58,34 @@ function BarChart({ bars, unitLabel }: { bars: Bar[]; unitLabel: string }) {
 
 export function ProgressPanel() {
   const { tasks } = useTasks();
+  const { goals } = useGoals();
   const { habits } = useHabits();
   const { log, record } = useHistory();
   const [open, setOpen] = useState(false);
 
   const today = asiaDayKey();
-  const done = tasks.filter((t) => t.done).length;
-  const pct = tasks.length ? Math.round((done / tasks.length) * 100) : 0;
+  const habitKeys = lastNDayKeys(30);
+
+  // --- individual percentages ---
+  const taskPct = tasks.length ? tasks.filter((t) => t.done).length / tasks.length : null;
+
+  const doneGoals = goals.filter((g) => g.current >= g.target).length;
+  const goalPct = goals.length ? doneGoals / goals.length : null;
+
   const habitsDone = habits.filter((h) => h.days.includes(today)).length;
+  const habitPct = habits.length ? habitsDone / habits.length : null;
+
+  // streak: average streak across habits, capped at 7 → /7
+  const streaks = habits.map((h) => streakOf(h.days, habitKeys));
+  const streakPct = streaks.length
+    ? Math.min(streaks.reduce((a, b) => a + b, 0) / streaks.length, 7) / 7
+    : null;
+
+  // --- overall: average of all available metrics ---
+  const pcts = [taskPct, goalPct, habitPct, streakPct].filter(
+    (p): p is number => p !== null,
+  );
+  const pct = pcts.length ? Math.round((pcts.reduce((a, b) => a + b, 0) / pcts.length) * 100) : 0;
 
   useEffect(() => {
     record(today, {
@@ -79,15 +106,12 @@ export function ProgressPanel() {
 
   const daily = useMemo<Bar[]>(
     () =>
-      lastNDayKeys(30).map((day) => {
-        const l = dayLabels(day);
-        return {
-          key: day,
-          label: l.day,
-          caption: l.weekday,
-          value: log[day]?.tasksDone ?? 0,
-        };
-      }),
+      lastNDayKeys(30).map((day) => ({
+        key: day,
+        label: dayLabels(day).day,
+        caption: dayLabels(day).weekday,
+        value: log[day]?.tasksDone ?? 0,
+      })),
     [log],
   );
 
@@ -186,7 +210,7 @@ export function ProgressPanel() {
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-sm text-muted-foreground">
-            {done} of {tasks.length} tasks completed
+            {tasks.filter((t) => t.done).length} of {tasks.length} tasks completed
           </p>
           <div className="mt-3 flex h-20 items-end gap-2">
             {counts.map((c, i) => (
