@@ -52,7 +52,7 @@ export function GreetingHeader() {
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-start">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4">
           <div className="min-w-0">
-            <h1 className="hand text-3xl leading-tight sm:text-5xl">
+            <h1 className="hand font-bold text-3xl leading-tight sm:text-5xl">
               <span className="marker">{greetingFor(hour, displayName)}</span>
             </h1>
             <p className="mt-1 truncate text-xs text-muted-foreground sm:text-sm" suppressHydrationWarning>

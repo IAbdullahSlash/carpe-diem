@@ -18,8 +18,8 @@ function NotFoundComponent() {
   return (
     <div className="grid min-h-screen place-items-center px-4">
       <div className="sketch max-w-md p-6 text-center sm:p-8">
-        <h1 className="hand text-6xl leading-none text-foreground">404</h1>
-        <h2 className="hand mt-3 text-3xl leading-tight text-foreground">
+        <h1 className="hand font-bold text-6xl leading-none text-foreground">404</h1>
+        <h2 className="hand font-bold mt-3 text-3xl leading-tight text-foreground">
           <span className="marker">Page not found</span>
         </h2>
         <p className="mt-3 text-sm text-muted-foreground">

@@ -114,7 +114,7 @@ function AuthPage() {
   return (
     <main className="mx-auto grid min-h-screen w-full max-w-md place-items-center px-4 py-10">
       <div className="sketch w-full p-6 sm:p-7">
-        <h1 className="hand text-4xl leading-tight text-foreground">
+        <h1 className="hand font-bold text-4xl leading-tight text-foreground">
           <span className="marker">Carpe Diem</span>
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
