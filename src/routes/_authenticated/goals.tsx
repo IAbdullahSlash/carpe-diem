@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_authenticated/goals")({
 function GoalsPage() {
   return (
     <div className="grid gap-4 xl:grid-cols-2">
-      <GoalsCard full />
+      <GoalsCard />
       <HabitTracker />
     </div>
   );
