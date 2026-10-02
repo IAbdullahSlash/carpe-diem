@@ -5,6 +5,7 @@ import { NotesBoard } from "@/components/tracker/NotesBoard";
 import { HabitTracker } from "@/components/tracker/HabitTracker";
 import { ProgressPanel } from "@/components/tracker/ProgressPanel";
 import { FocusCard, MoodCard } from "@/components/tracker/DayPanel";
+import { ComingUp } from "@/components/tracker/ComingUp";
 
 export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
@@ -35,6 +36,7 @@ function Dashboard() {
       <ProgressPanel />
       <GoalsCard />
       <HabitTracker />
+      <ComingUp />
     </div>
   );
 }

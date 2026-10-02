@@ -1,17 +1,16 @@
-import { StickyNote, Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { StickyNote, Plus, Trash2, Pin, X } from "lucide-react";
 import { SketchCard } from "./SketchCard";
 import { cn } from "@/lib/utils";
 import { useNotes, type Note } from "@/lib/tracker-store";
-
-const tintClass: Record<Note["tint"], string> = {
-  mint: "bg-mint",
-  sky: "bg-sky",
-  butter: "bg-butter",
-  coral: "bg-coral",
-};
+import { noteTint } from "./tints";
+import { useTodayKey } from "@/hooks/use-today";
+import { dateOfDayKey, dayKeyOfDate, friendlyDay } from "@/lib/time";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export function NotesBoard({ full = false }: { full?: boolean }) {
-  const { notes, addNote, updateNote, removeNote } = useNotes();
+  const { notes, addNote, updateNote, pinNote, removeNote } = useNotes();
 
   return (
     <SketchCard
@@ -31,13 +30,15 @@ export function NotesBoard({ full = false }: { full?: boolean }) {
       {notes.length === 0 ? (
         <p className="hand text-lg text-muted-foreground">No notes yet — jot something down.</p>
       ) : (
-        <div className={cn("grid gap-3", full ? "sm:grid-cols-2 xl:grid-cols-3" : "sm:grid-cols-2")}>
+        <div
+          className={cn("grid gap-3", full ? "sm:grid-cols-2 xl:grid-cols-3" : "sm:grid-cols-2")}
+        >
           {notes.map((note, i) => (
             <div
               key={note.id}
               className={cn(
                 "relative rounded-md border-2 border-ink p-2 shadow-[3px_3px_0_0_var(--ink)]",
-                tintClass[note.tint],
+                noteTint[note.tint],
                 i % 2 ? "rotate-[0.6deg]" : "-rotate-[0.6deg]",
               )}
             >
@@ -49,6 +50,7 @@ export function NotesBoard({ full = false }: { full?: boolean }) {
                 rows={3}
                 className="hand w-full resize-none bg-transparent pr-6 text-xl leading-snug text-ink outline-none placeholder:text-ink/50"
               />
+              <PinControl note={note} onPin={(day) => pinNote(note.id, day)} />
               <button
                 type="button"
                 aria-label="Delete note"
@@ -62,5 +64,53 @@ export function NotesBoard({ full = false }: { full?: boolean }) {
         </div>
       )}
     </SketchCard>
+  );
+}
+
+/** "Pin to date" picker, or the pinned date with an unpin button. */
+function PinControl({ note, onPin }: { note: Note; onPin: (day: string | null) => void }) {
+  const today = useTodayKey();
+  const [open, setOpen] = useState(false);
+
+  if (note.day) {
+    return (
+      <span className="mt-1 inline-flex items-center gap-1 rounded-full border-2 border-ink bg-background/60 px-2 py-0.5 text-[11px] font-semibold text-ink">
+        <Pin className="h-3 w-3 fill-current" /> {friendlyDay(note.day, today)}
+        <button
+          type="button"
+          aria-label="Unpin from calendar"
+          onClick={() => onPin(null)}
+          className="ml-0.5 text-ink/60 hover:text-ink"
+        >
+          <X className="h-3 w-3" />
+        </button>
+      </span>
+    );
+  }
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="mt-1 inline-flex items-center gap-1 text-[11px] text-ink/60 hover:text-ink"
+        >
+          <Pin className="h-3 w-3" /> Pin to date
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-2" align="start">
+        <Calendar
+          mode="single"
+          defaultMonth={dateOfDayKey(today)}
+          today={dateOfDayKey(today)}
+          weekStartsOn={1}
+          onSelect={(date) => {
+            if (!date) return;
+            onPin(dayKeyOfDate(date));
+            setOpen(false);
+          }}
+        />
+      </PopoverContent>
+    </Popover>
   );
 }

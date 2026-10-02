@@ -41,6 +41,23 @@ export type Note = {
   text: string;
   tint: "mint" | "sky" | "butter" | "coral";
   updatedAt: string;
+  /** Asia day key the note is pinned to on the calendar, if any. */
+  day?: string | undefined;
+};
+
+export type EntryKind = "note" | "reminder" | "event" | "deadline";
+
+export type CalendarEntry = {
+  id: string;
+  kind: EntryKind;
+  title: string;
+  details?: string | undefined;
+  /** Asia day key. */
+  day: string;
+  /** "HH:mm"; empty means all day. */
+  time?: string | undefined;
+  important: boolean;
+  done: boolean;
 };
 
 export type Habit = {
@@ -261,6 +278,7 @@ export function useNotes() {
       text: String(row["text"] ?? ""),
       tint: (row["tint"] as Note["tint"]) ?? "mint",
       updatedAt: String(row["updatedAt"] ?? new Date().toISOString()),
+      day: (row["day"] as string) ?? undefined,
     }));
   });
 
@@ -294,7 +312,132 @@ export function useNotes() {
     [invalidate, patch],
   );
 
-  return { notes: data, addNote, updateNote, removeNote, hydrated };
+  const pinNote = useCallback(
+    async (id: string, day: string | null) => {
+      patch((prev) => prev.map((n) => (n.id === id ? { ...n, day: day ?? undefined } : n)));
+      const userId = await currentUserId();
+      await updateDoc(doc(db, "users", userId, "notes", id), { day });
+    },
+    [patch],
+  );
+
+  return { notes: data, addNote, updateNote, pinNote, removeNote, hydrated };
+}
+
+/* ---------------------------------------------------------------------------
+ * Calendar entries — notes, reminders and events on a given day
+ * ------------------------------------------------------------------------- */
+
+function toEntry(row: DocumentData & { id: string }): CalendarEntry {
+  return {
+    id: row.id,
+    kind: (row["kind"] as EntryKind) ?? "note",
+    title: String(row["title"] ?? ""),
+    details: (row["details"] as string) || undefined,
+    day: String(row["day"] ?? ""),
+    time: (row["time"] as string) || undefined,
+    important: Boolean(row["important"]),
+    done: Boolean(row["done"]),
+  };
+}
+
+const byDayThenTime = (a: CalendarEntry, b: CalendarEntry) =>
+  a.day.localeCompare(b.day) || (a.time ?? "").localeCompare(b.time ?? "");
+
+/** Entries with `from <= day <= to`. All ranges share the "calendar" cache prefix. */
+export function useCalendar(from: string, to: string) {
+  const queryClient = useQueryClient();
+  const q = useQuery({
+    queryKey: ["calendar", from, to],
+    staleTime: 30_000,
+    queryFn: async (): Promise<CalendarEntry[]> => {
+      const snapshot = await getDocs(
+        query(await myCol("calendar"), where("day", ">=", from), where("day", "<=", to)),
+      );
+      return rows(snapshot).map(toEntry).sort(byDayThenTime);
+    },
+  });
+
+  // Several ranges can be cached at once (the month view, the dashboard's
+  // next-7-days list), so writes patch and refresh every one of them.
+  const patchAll = useCallback(
+    (updater: (prev: CalendarEntry[]) => CalendarEntry[]) =>
+      queryClient.setQueriesData<CalendarEntry[]>({ queryKey: ["calendar"] }, (prev) =>
+        prev ? updater(prev) : prev,
+      ),
+    [queryClient],
+  );
+  const refresh = useCallback(
+    () => queryClient.invalidateQueries({ queryKey: ["calendar"] }),
+    [queryClient],
+  );
+
+  const addEntry = useCallback(
+    async (entry: Omit<CalendarEntry, "id" | "done">) => {
+      await addDoc(await myCol("calendar"), {
+        kind: entry.kind,
+        title: entry.title,
+        details: entry.details ?? null,
+        day: entry.day,
+        time: entry.time ?? null,
+        important: entry.important,
+        done: false,
+        createdAt: new Date().toISOString(),
+      });
+      await refresh();
+    },
+    [refresh],
+  );
+
+  const updateEntry = useCallback(
+    async (id: string, changes: Partial<Pick<CalendarEntry, "important" | "done">>) => {
+      patchAll((prev) => prev.map((e) => (e.id === id ? { ...e, ...changes } : e)));
+      const userId = await currentUserId();
+      await updateDoc(doc(db, "users", userId, "calendar", id), changes);
+      await refresh();
+    },
+    [patchAll, refresh],
+  );
+
+  const removeEntry = useCallback(
+    async (id: string) => {
+      patchAll((prev) => prev.filter((e) => e.id !== id));
+      const userId = await currentUserId();
+      await deleteDoc(doc(db, "users", userId, "calendar", id));
+      await refresh();
+    },
+    [patchAll, refresh],
+  );
+
+  return {
+    entries: q.data ?? [],
+    hydrated: !q.isLoading,
+    addEntry,
+    updateEntry,
+    removeEntry,
+  };
+}
+
+/**
+ * Unfinished deadlines dated before `today`. Filters by kind only (a
+ * single-field index) and narrows the rest here, so no composite index is needed.
+ * Shares the "calendar" cache prefix, so useCalendar's writes refresh it too.
+ */
+export function useOverdueDeadlines(today: string) {
+  const q = useQuery({
+    queryKey: ["calendar", "overdue", today],
+    staleTime: 30_000,
+    queryFn: async (): Promise<CalendarEntry[]> => {
+      const snapshot = await getDocs(
+        query(await myCol("calendar"), where("kind", "==", "deadline")),
+      );
+      return rows(snapshot)
+        .map(toEntry)
+        .filter((e) => !e.done && e.day < today)
+        .sort(byDayThenTime);
+    },
+  });
+  return q.data ?? [];
 }
 
 /* ---------------------------------------------------------------------------
@@ -425,9 +568,7 @@ export function useHistory() {
       // Enforce the rolling 90-day window on write.
       const cutoff = lastNDayKeys(HISTORY_DAYS)[0];
       if (cutoff) {
-        const old = await getDocs(
-          query(userCol(userId, "dayProgress"), where("day", "<", cutoff)),
-        );
+        const old = await getDocs(query(userCol(userId, "dayProgress"), where("day", "<", cutoff)));
         await Promise.all(old.docs.map((d) => deleteDoc(d.ref)));
       }
     },

@@ -15,6 +15,7 @@ const NAV = [
   { to: "/tasks", label: "Tasks" },
   { to: "/goals", label: "Goals" },
   { to: "/notes", label: "Notes" },
+  { to: "/calendar", label: "Calendar" },
 ] as const;
 
 const MODES: { mode: ThemeMode; icon: typeof Sun; label: string }[] = [

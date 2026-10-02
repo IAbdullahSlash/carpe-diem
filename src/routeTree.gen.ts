@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedGoalsRouteImport } from './routes/_authenticated/goals'
 import { Route as AuthenticatedNotesRouteImport } from './routes/_authenticated/notes'
 import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/tasks'
@@ -28,6 +29,11 @@ const AuthRoute = AuthRouteImport.update({
 const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCalendarRoute = AuthenticatedCalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedGoalsRoute = AuthenticatedGoalsRouteImport.update({
@@ -49,12 +55,14 @@ const AuthenticatedTasksRoute = AuthenticatedTasksRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/auth': typeof AuthRoute
+  '/calendar': typeof AuthenticatedCalendarRoute
   '/goals': typeof AuthenticatedGoalsRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/tasks': typeof AuthenticatedTasksRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
+  '/calendar': typeof AuthenticatedCalendarRoute
   '/goals': typeof AuthenticatedGoalsRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/tasks': typeof AuthenticatedTasksRoute
@@ -64,6 +72,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
   '/_authenticated/goals': typeof AuthenticatedGoalsRoute
   '/_authenticated/notes': typeof AuthenticatedNotesRoute
   '/_authenticated/tasks': typeof AuthenticatedTasksRoute
@@ -71,13 +80,14 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/goals' | '/notes' | '/tasks'
+  fullPaths: '/' | '/auth' | '/calendar' | '/goals' | '/notes' | '/tasks'
   fileRoutesByTo: FileRoutesByTo
-  to: '/auth' | '/goals' | '/notes' | '/tasks' | '/'
+  to: '/auth' | '/calendar' | '/goals' | '/notes' | '/tasks' | '/'
   id:
     | '__root__'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/calendar'
     | '/_authenticated/goals'
     | '/_authenticated/notes'
     | '/_authenticated/tasks'
@@ -112,6 +122,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/calendar': {
+      id: '/_authenticated/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof AuthenticatedCalendarRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/goals': {
       id: '/_authenticated/goals'
       path: '/goals'
@@ -137,6 +154,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
   AuthenticatedGoalsRoute: typeof AuthenticatedGoalsRoute
   AuthenticatedNotesRoute: typeof AuthenticatedNotesRoute
   AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
@@ -144,6 +162,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
   AuthenticatedGoalsRoute: AuthenticatedGoalsRoute,
   AuthenticatedNotesRoute: AuthenticatedNotesRoute,
   AuthenticatedTasksRoute: AuthenticatedTasksRoute,

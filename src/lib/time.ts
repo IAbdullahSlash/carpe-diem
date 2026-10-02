@@ -113,3 +113,41 @@ export function monthLabel(monthKey: string) {
     year: "2-digit",
   }).format(date);
 }
+
+/** Local-midnight Date for a day key — what the date picker works with. */
+export function dateOfDayKey(dayKey: string) {
+  const [y, m, d] = dayKey.split("-").map(Number);
+  return new Date(y ?? 1970, (m ?? 1) - 1, d ?? 1);
+}
+
+/** Day key of a date picker Date (local calendar date, no timezone shift). */
+export function dayKeyOfDate(date: Date) {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+/** "Today" / "Tomorrow" / "Wed 14 Oct" relative to `today`. */
+export function friendlyDay(dayKey: string, today: string) {
+  if (dayKey === today) return "Today";
+  if (dayKey === shiftDayKey(today, 1)) return "Tomorrow";
+  if (dayKey === shiftDayKey(today, -1)) return "Yesterday";
+  const l = dayLabels(dayKey);
+  return `${l.weekday} ${l.day} ${l.month}`;
+}
+
+/** Calendar days from `today` to `dayKey` (negative when it has passed). */
+export function daysUntil(dayKey: string, today: string) {
+  return Math.round(
+    (new Date(`${dayKey}T12:00:00Z`).getTime() - new Date(`${today}T12:00:00Z`).getTime()) /
+      86_400_000,
+  );
+}
+
+/** "due today" / "due tomorrow" / "in 5 days" / "1 day overdue" */
+export function deadlineText(dayKey: string, today: string) {
+  const n = daysUntil(dayKey, today);
+  if (n === 0) return "due today";
+  if (n === 1) return "due tomorrow";
+  if (n > 1) return `in ${n} days`;
+  return `${-n} day${n === -1 ? "" : "s"} overdue`;
+}
