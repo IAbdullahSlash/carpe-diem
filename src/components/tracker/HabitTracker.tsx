@@ -2,17 +2,22 @@ import { useState } from "react";
 import { Flame, Plus, Trash2 } from "lucide-react";
 import { SketchCard } from "./SketchCard";
 import { cn } from "@/lib/utils";
-import { asiaDayKey, dayLabels, lastNDayKeys } from "@/lib/time";
+import { dayLabels, lastNDayKeys } from "@/lib/time";
 import { streakOf, useHabits } from "@/lib/tracker-store";
+import { useTodayKey } from "@/hooks/use-today";
 
 export function HabitTracker() {
   const { habits, addHabit, toggleHabit, removeHabit } = useHabits();
   const [title, setTitle] = useState("");
-  const week = lastNDayKeys(7);
-  const today = asiaDayKey();
+  const today = useTodayKey();
+  const week = lastNDayKeys(7, today);
 
   return (
-    <SketchCard title="Habits & streaks" subtitle="Last 7 days" icon={<Flame className="h-5 w-5" />}>
+    <SketchCard
+      title="Habits & streaks"
+      subtitle="Last 7 days"
+      icon={<Flame className="h-5 w-5" />}
+    >
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-2 pb-2">
         <span className="text-xs uppercase tracking-widest text-muted-foreground">Habit</span>
         <div className="flex shrink-0 items-center gap-1">
@@ -40,7 +45,7 @@ export function HabitTracker() {
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold">{habit.title}</p>
               <p className="text-xs text-muted-foreground">
-                {streakOf(habit.days, week)} day streak
+                {streakOf(habit.days, today)} day streak
               </p>
             </div>
             <div className="flex shrink-0 items-center gap-1">

@@ -5,7 +5,7 @@ import { SketchCard } from "./SketchCard";
 import { useGoals } from "@/lib/tracker-store";
 
 export function GoalsCard({ className }: { className?: string | undefined }) {
-  const { goals, addGoal, removeGoal } = useGoals();
+  const { goals, addGoal, bumpGoal, removeGoal } = useGoals();
   const [title, setTitle] = useState("");
 
   const submit = async (e: React.FormEvent) => {
@@ -21,26 +21,33 @@ export function GoalsCard({ className }: { className?: string | undefined }) {
     }
   };
 
-  // Only show the most recent active goal — one box, one focus
+  // Only show the oldest unfinished goal — one box, one focus
   const activeGoal = goals.find((g) => g.current < g.target);
-
-  const done = activeGoal ? activeGoal.current >= activeGoal.target : false;
+  const achieved = goals.length - goals.filter((g) => g.current < g.target).length;
 
   return (
     <SketchCard
       title="Goals to achieve"
-      subtitle={activeGoal ? (done ? "Complete" : "In progress") : "No active goal"}
+      subtitle={`${activeGoal ? "In progress" : "No active goal"} · ${achieved} achieved`}
       icon={<Target className="h-5 w-5" />}
       className={className}
     >
       {activeGoal ? (
         <div className="flex items-center justify-between gap-2">
-          <p
-            className={`truncate text-sm font-semibold ${done ? "line-through text-muted-foreground" : "text-foreground"}`}
-          >
-            {activeGoal.title}
-          </p>
+          <p className="truncate text-sm font-semibold text-foreground">{activeGoal.title}</p>
           <div className="flex items-center gap-1">
+            <button
+              type="button"
+              aria-label="Mark goal achieved"
+              title="Mark achieved"
+              onClick={async () => {
+                await bumpGoal(activeGoal.id, activeGoal.target - activeGoal.current);
+                toast.success("Goal achieved");
+              }}
+              className="grid h-8 w-8 place-items-center rounded-md border-2 border-ink bg-mint text-ink"
+            >
+              <Check className="h-3.5 w-3.5" />
+            </button>
             <button
               type="button"
               aria-label="Delete goal"
@@ -49,11 +56,6 @@ export function GoalsCard({ className }: { className?: string | undefined }) {
             >
               <Trash2 className="h-3.5 w-3.5" />
             </button>
-            {done ? (
-              <span className="shrink-0 text-sky">
-                <Check className="h-4 w-4" />
-              </span>
-            ) : null}
           </div>
         </div>
       ) : (

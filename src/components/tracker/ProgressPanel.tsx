@@ -1,17 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Activity, BarChart3 } from "lucide-react";
 import { SketchCard } from "./SketchCard";
-import {
-  useHabits,
-  useHistory,
-  useTasks,
-  useGoals,
-  streakOf,
-  type DayRecord,
-} from "@/lib/tracker-store";
+import { useHabits, useHistory, useTasks } from "@/lib/tracker-store";
+import { useTodayKey } from "@/hooks/use-today";
 import {
   HISTORY_DAYS,
-  asiaDayKey,
   dayLabels,
   lastNDayKeys,
   monthKeyOf,
@@ -57,81 +50,86 @@ function BarChart({ bars, unitLabel }: { bars: Bar[]; unitLabel: string }) {
 }
 
 export function ProgressPanel() {
-  const { tasks } = useTasks();
-  const { goals } = useGoals();
-  const { habits } = useHabits();
-  const { log, record } = useHistory();
+  const { tasks, hydrated: tasksReady } = useTasks();
+  const { habits, hydrated: habitsReady } = useHabits();
+  const { log, record, hydrated: logReady } = useHistory();
   const [open, setOpen] = useState(false);
+  const today = useTodayKey();
 
-  const today = asiaDayKey();
-  const habitKeys = lastNDayKeys(30);
+  // Today's progress only counts today's work: tasks still open plus tasks
+  // finished today (older completions drop out), and habits ticked today.
+  const tasksDoneToday = tasks.filter((t) => t.done && t.completedOn === today).length;
+  const tasksToday = tasks.filter((t) => !t.done).length + tasksDoneToday;
+  const habitsDoneOn = (day: string) => habits.filter((h) => h.days.includes(day)).length;
+  const habitsDone = habitsDoneOn(today);
 
-  // --- individual percentages ---
-  const taskPct = tasks.length ? tasks.filter((t) => t.done).length / tasks.length : null;
-
-  const doneGoals = goals.filter((g) => g.current >= g.target).length;
-  const goalPct = goals.length ? doneGoals / goals.length : null;
-
-  const habitsDone = habits.filter((h) => h.days.includes(today)).length;
-  const habitPct = habits.length ? habitsDone / habits.length : null;
-
-  // streak: average streak across habits, capped at 7 → /7
-  const streaks = habits.map((h) => streakOf(h.days, habitKeys));
-  const streakPct = streaks.length
-    ? Math.min(streaks.reduce((a, b) => a + b, 0) / streaks.length, 7) / 7
-    : null;
-
-  // --- overall: average of all available metrics ---
-  const pcts = [taskPct, goalPct, habitPct, streakPct].filter(
-    (p): p is number => p !== null,
-  );
-  const pct = pcts.length ? Math.round((pcts.reduce((a, b) => a + b, 0) / pcts.length) * 100) : 0;
+  const total = tasksToday + habits.length;
+  const pct = total ? Math.round(((tasksDoneToday + habitsDone) / total) * 100) : 0;
 
   useEffect(() => {
+    // Writing before the data loads would overwrite today's record with zeros.
+    if (!tasksReady || !habitsReady || !logReady) return;
     record(today, {
-      tasksDone: tasks.filter((t) => t.completedOn === today).length,
-      tasksTotal: tasks.length,
+      tasksDone: tasksDoneToday,
+      tasksTotal: tasksToday,
       habitsDone,
       habitsTotal: habits.length,
     });
-  }, [record, today, tasks, habits, habitsDone]);
+    // Habits can be ticked for earlier days in the grid; keep those records in step.
+    for (const day of lastNDayKeys(7, today).slice(0, -1)) {
+      const entry = log[day];
+      const done = habitsDoneOn(day);
+      if (entry && entry.habitsDone !== done) record(day, { ...entry, habitsDone: done });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    record,
+    today,
+    tasksReady,
+    habitsReady,
+    logReady,
+    tasksDoneToday,
+    tasksToday,
+    habits,
+    habitsDone,
+  ]);
 
-  const week = lastNDayKeys(7);
-  const entryOf = (day: string): DayRecord | undefined => log[day];
-  const counts = week.map(
-    (day) => entryOf(day)?.tasksDone ?? tasks.filter((t) => t.completedOn === day).length,
-  );
+  // Live completions are exact for today; earlier days come from the log, which
+  // also remembers tasks that have since been deleted.
+  const tasksDoneOn = (day: string) =>
+    day === today
+      ? tasksDoneToday
+      : (log[day]?.tasksDone ?? tasks.filter((t) => t.completedOn === day).length);
+
+  const week = lastNDayKeys(7, today);
+  const counts = week.map(tasksDoneOn);
   const max = Math.max(1, ...counts);
   const circumference = 2 * Math.PI * 42;
 
-  const daily = useMemo<Bar[]>(
-    () =>
-      lastNDayKeys(30).map((day) => ({
-        key: day,
-        label: dayLabels(day).day,
-        caption: dayLabels(day).weekday,
-        value: log[day]?.tasksDone ?? 0,
-      })),
-    [log],
-  );
+  const history = lastNDayKeys(HISTORY_DAYS, today);
+  const historyCounts = history.map(tasksDoneOn);
 
-  const monthly = useMemo<Bar[]>(() => {
-    const sums = new Map<string, number>();
-    for (const day of lastNDayKeys(HISTORY_DAYS)) {
-      const key = monthKeyOf(day);
-      sums.set(key, (sums.get(key) ?? 0) + (log[day]?.tasksDone ?? 0));
-    }
-    return [...sums].map(([key, value]) => ({ key, label: monthLabel(key), value }));
-  }, [log]);
+  const daily: Bar[] = history.slice(-30).map((day, i) => ({
+    key: day,
+    label: dayLabels(day).day,
+    caption: dayLabels(day).weekday,
+    value: historyCounts[history.length - 30 + i] ?? 0,
+  }));
 
-  const quarterly = useMemo<Bar[]>(() => {
+  const sumBy = (bucket: (day: string) => string) => {
     const sums = new Map<string, number>();
-    for (const day of lastNDayKeys(HISTORY_DAYS)) {
-      const key = quarterKeyOf(day);
-      sums.set(key, (sums.get(key) ?? 0) + (log[day]?.tasksDone ?? 0));
-    }
-    return [...sums].map(([key, value]) => ({ key, label: key, value }));
-  }, [log]);
+    history.forEach((day, i) => {
+      const key = bucket(day);
+      sums.set(key, (sums.get(key) ?? 0) + (historyCounts[i] ?? 0));
+    });
+    return [...sums];
+  };
+  const monthly: Bar[] = sumBy(monthKeyOf).map(([key, value]) => ({
+    key,
+    label: monthLabel(key),
+    value,
+  }));
+  const quarterly: Bar[] = sumBy(quarterKeyOf).map(([key, value]) => ({ key, label: key, value }));
 
   const totalTracked = Object.keys(log).length;
 
@@ -185,14 +183,7 @@ export function ProgressPanel() {
       >
         <div className="relative h-28 w-28 shrink-0">
           <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90">
-            <circle
-              cx="50"
-              cy="50"
-              r="42"
-              fill="none"
-              stroke="var(--muted)"
-              strokeWidth="10"
-            />
+            <circle cx="50" cy="50" r="42" fill="none" stroke="var(--muted)" strokeWidth="10" />
             <circle
               cx="50"
               cy="50"
@@ -210,7 +201,10 @@ export function ProgressPanel() {
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-sm text-muted-foreground">
-            {tasks.filter((t) => t.done).length} of {tasks.length} tasks completed
+            {tasksDoneToday} of {tasksToday} tasks done today
+          </p>
+          <p className="text-sm text-muted-foreground">
+            {habitsDone} of {habits.length} habits ticked
           </p>
           <div className="mt-3 flex h-20 items-end gap-2">
             {counts.map((c, i) => (

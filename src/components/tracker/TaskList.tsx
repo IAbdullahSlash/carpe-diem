@@ -5,6 +5,7 @@ import { SketchCard } from "./SketchCard";
 import { cn } from "@/lib/utils";
 import { useTasks, type Priority, type Task } from "@/lib/tracker-store";
 import { pendingSinceText } from "@/lib/time";
+import { useTodayKey } from "@/hooks/use-today";
 
 const priorityStyles: Record<Priority, string> = {
   low: "bg-sky",
@@ -21,6 +22,8 @@ export function TaskRow({
   onToggle: (id: string) => void;
   onRemove: (id: string) => void;
 }) {
+  const today = useTodayKey();
+  const pendingSince = task.done ? null : pendingSinceText(task.createdAt, today);
   return (
     <li className="flex min-h-11 items-center gap-3 border-b border-dashed border-border/60 py-2 last:border-0">
       <button
@@ -39,11 +42,13 @@ export function TaskRow({
       >
         {task.title}
         {task.due ? (
-          <span className="ml-2 whitespace-nowrap text-xs text-muted-foreground">due {task.due}</span>
+          <span className="ml-2 whitespace-nowrap text-xs text-muted-foreground">
+            due {task.due}
+          </span>
         ) : null}
-        {!task.done && pendingSinceText(task.createdAt) ? (
+        {pendingSince ? (
           <span className="ml-2 whitespace-nowrap text-xs font-medium text-coral">
-            {pendingSinceText(task.createdAt)}
+            {pendingSince}
           </span>
         ) : null}
       </span>

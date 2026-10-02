@@ -2,11 +2,12 @@ import { useState } from "react";
 import { Quote, Shuffle } from "lucide-react";
 import { SketchCard } from "./SketchCard";
 import { quoteForDay } from "@/lib/quotes";
-import { asiaDayKey } from "@/lib/time";
+import { useTodayKey } from "@/hooks/use-today";
 
 export function QuoteCard({ compact = false }: { compact?: boolean }) {
+  const today = useTodayKey();
   const [offset, setOffset] = useState(0);
-  const quote = quoteForDay(asiaDayKey(), offset);
+  const quote = quoteForDay(today, offset);
   if (!quote) return null;
 
   return (

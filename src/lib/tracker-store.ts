@@ -14,7 +14,7 @@ import {
   type DocumentData,
 } from "firebase/firestore";
 import { auth, db, waitForAuthUser } from "./firebase";
-import { HISTORY_DAYS, asiaDayKey, lastNDayKeys } from "./time";
+import { HISTORY_DAYS, asiaDayKey, lastNDayKeys, shiftDayKey } from "./time";
 
 export type Priority = "low" | "normal" | "high";
 
@@ -360,12 +360,18 @@ export function useHabits() {
   return { habits: data, addHabit, toggleHabit, removeHabit, hydrated };
 }
 
-export function streakOf(days: string[], keys: string[]) {
+/**
+ * Consecutive completed days ending today. An unmarked today doesn't break the
+ * streak yet (the day isn't over), so counting starts from yesterday instead;
+ * any fully missed day resets it to 0.
+ */
+export function streakOf(days: string[], today: string) {
+  const done = new Set(days);
+  let key = done.has(today) ? today : shiftDayKey(today, -1);
   let streak = 0;
-  for (let i = keys.length - 1; i >= 0; i--) {
-    const key = keys[i];
-    if (key && days.includes(key)) streak++;
-    else break;
+  while (done.has(key)) {
+    streak++;
+    key = shiftDayKey(key, -1);
   }
   return streak;
 }

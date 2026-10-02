@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Smile, Star } from "lucide-react";
 import { SketchCard } from "./SketchCard";
 import { cn } from "@/lib/utils";
-import { asiaDayKey } from "@/lib/time";
+import { useTodayKey } from "@/hooks/use-today";
 import { usePersistentState } from "@/lib/tracker-store";
 import {
   AlertDialog,
@@ -18,7 +18,7 @@ import {
 const MOODS = ["😖", "😕", "🙂", "😄", "🤩"];
 
 export function MoodCard({ className }: { className?: string | undefined }) {
-  const today = asiaDayKey();
+  const today = useTodayKey();
   const [moods, setMoods] = usePersistentState<Record<string, number>>("moods", {});
   const current = moods[today];
 
@@ -48,7 +48,7 @@ export function MoodCard({ className }: { className?: string | undefined }) {
 }
 
 export function FocusCard({ className }: { className?: string | undefined }) {
-  const today = asiaDayKey();
+  const today = useTodayKey();
   const [focus, setFocus] = usePersistentState<Record<string, string>>("focus", {});
   const [held, setHeld] = usePersistentState<Record<string, string>>("focusHeld", {});
   const [open, setOpen] = useState(false);

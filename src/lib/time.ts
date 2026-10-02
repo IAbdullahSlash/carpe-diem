@@ -35,11 +35,17 @@ export function asiaDayKey(date: Date = new Date()) {
   }).format(date);
 }
 
-export function lastNDayKeys(n: number) {
+/** Moves a Y-M-D day key by `delta` calendar days. */
+export function shiftDayKey(dayKey: string, delta: number) {
+  const date = new Date(`${dayKey}T12:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + delta);
+  return date.toISOString().slice(0, 10);
+}
+
+/** The `n` day keys ending at `endKey` (today by default), oldest first. */
+export function lastNDayKeys(n: number, endKey: string = asiaDayKey()) {
   const out: string[] = [];
-  for (let i = n - 1; i >= 0; i--) {
-    out.push(asiaDayKey(new Date(Date.now() - i * 86400000)));
-  }
+  for (let i = n - 1; i >= 0; i--) out.push(shiftDayKey(endKey, -i));
   return out;
 }
 
@@ -74,13 +80,14 @@ export function dayLabels(dayKey: string) {
 }
 
 /** "pending since yesterday" / "pending since two days" / "pending since N days" */
-export function pendingSinceText(createdAtIso: string): string | null {
+export function pendingSinceText(
+  createdAtIso: string,
+  todayKey: string = asiaDayKey(),
+): string | null {
   if (!createdAtIso) return null;
   const createdKey = asiaDayKey(new Date(createdAtIso));
-  const todayKey = asiaDayKey();
   const diff = Math.round(
-    (new Date(`${todayKey}T12:00:00Z`).getTime() -
-      new Date(`${createdKey}T12:00:00Z`).getTime()) /
+    (new Date(`${todayKey}T12:00:00Z`).getTime() - new Date(`${createdKey}T12:00:00Z`).getTime()) /
       86_400_000,
   );
   if (diff <= 0) return null;
