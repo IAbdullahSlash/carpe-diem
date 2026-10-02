@@ -47,10 +47,10 @@ That movie is where many people — including the creator of this app — first 
 
 ```bash
 # Install dependencies
-bun install
+npm install
 
 # Run the dev server
-bun run dev
+npm run dev
 ```
 
 The app requires Firebase for authentication and data persistence — see the project config for setup details.
