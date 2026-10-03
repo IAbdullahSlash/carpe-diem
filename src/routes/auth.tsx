@@ -124,7 +124,7 @@ function AuthPage() {
         </p>
 
         {error && (
-          <div className="mt-4 rounded-lg border-2 border-coral/60 bg-coral/15 px-4 py-3 text-sm text-foreground">
+          <div className="mt-4 rounded-lg border-2 border-coral-ink bg-coral/25 px-4 py-3 text-sm text-foreground">
             {error}
           </div>
         )}
@@ -141,7 +141,7 @@ function AuthPage() {
                   placeholder="First name"
                   aria-label="First name"
                   autoComplete="given-name"
-                  className="min-h-11 w-full rounded-full border-2 border-ink bg-transparent px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="field w-full"
                 />
                 <input
                   type="text"
@@ -151,7 +151,7 @@ function AuthPage() {
                   placeholder="Second name"
                   aria-label="Second name"
                   autoComplete="family-name"
-                  className="min-h-11 w-full rounded-full border-2 border-ink bg-transparent px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="field w-full"
                 />
               </div>
             </>
@@ -164,7 +164,7 @@ function AuthPage() {
             placeholder="you@email.com"
             aria-label="Email"
             autoComplete="email"
-            className="min-h-11 w-full rounded-full border-2 border-ink bg-transparent px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="field w-full"
           />
           <input
             type="password"
@@ -175,7 +175,7 @@ function AuthPage() {
             placeholder="Password"
             aria-label="Password"
             autoComplete={mode === "signin" ? "current-password" : "new-password"}
-            className="min-h-11 w-full rounded-full border-2 border-ink bg-transparent px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            className="field w-full"
           />
           {mode === "signup" && (
             <input
@@ -186,13 +186,13 @@ function AuthPage() {
               placeholder="Confirm password"
               aria-label="Confirm password"
               autoComplete="new-password"
-              className="min-h-11 w-full rounded-full border-2 border-ink bg-transparent px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="field w-full"
             />
           )}
           <button
             type="submit"
             disabled={busy}
-            className="min-h-11 w-full rounded-full border-2 border-ink bg-mint text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+            className="lift min-h-11 w-full rounded-lg border-2 border-ink bg-mint text-sm font-semibold text-on-tint disabled:cursor-wait disabled:opacity-60"
           >
             {mode === "signin" ? "Sign in" : "Create account"}
           </button>
@@ -206,7 +206,7 @@ function AuthPage() {
           type="button"
           onClick={google}
           disabled={busy}
-          className="min-h-11 w-full rounded-full border-2 border-ink bg-butter text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+          className="lift min-h-11 w-full rounded-lg border-2 border-ink bg-butter text-sm font-semibold text-on-tint disabled:cursor-wait disabled:opacity-60"
         >
           Continue with Google
         </button>

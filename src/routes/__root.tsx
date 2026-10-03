@@ -29,7 +29,7 @@ function NotFoundComponent() {
         <div className="mt-6">
           <Link
             to="/"
-            className="inline-flex min-h-11 items-center justify-center rounded-full border-2 border-ink bg-mint px-4 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5"
+            className="inline-flex min-h-11 items-center justify-center rounded-full border-2 border-ink bg-mint px-4 text-sm font-semibold text-on-tint lift"
           >
             Go home
           </Link>
@@ -58,13 +58,13 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
               router.invalidate();
               reset();
             }}
-            className="inline-flex min-h-11 items-center justify-center rounded-full border-2 border-ink bg-mint px-4 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5"
+            className="inline-flex min-h-11 items-center justify-center rounded-full border-2 border-ink bg-mint px-4 text-sm font-semibold text-on-tint lift"
           >
             Try again
           </button>
           <a
             href="/"
-            className="inline-flex min-h-11 items-center justify-center rounded-full border-2 border-ink px-4 text-sm font-semibold text-foreground transition-transform hover:-translate-y-0.5"
+            className="inline-flex min-h-11 items-center justify-center rounded-full border-2 border-ink px-4 text-sm font-semibold text-foreground lift"
           >
             Go home
           </a>
@@ -92,7 +92,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "theme-color", content: "#1f2421" },
+      // Browser chrome matches the paper colour in each theme.
+      { name: "theme-color", content: "#f9f6ee", media: "(prefers-color-scheme: light)" },
+      { name: "theme-color", content: "#1c1f27", media: "(prefers-color-scheme: dark)" },
     ],
     links: [
       {

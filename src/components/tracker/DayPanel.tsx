@@ -32,7 +32,7 @@ export function MoodCard({ className }: { className?: string | undefined }) {
             aria-label={`Rate day ${i + 1} of 5`}
             onClick={() => setMoods((prev) => ({ ...prev, [today]: i }))}
             className={cn(
-              "grid h-12 w-12 place-items-center rounded-full border-2 border-ink text-xl transition-transform hover:-translate-y-0.5",
+              "grid h-12 w-12 place-items-center rounded-full border-2 border-ink text-xl lift",
               current === i ? "bg-butter" : "bg-transparent",
             )}
           >
@@ -81,7 +81,7 @@ export function FocusCard({ className }: { className?: string | undefined }) {
         <div className="space-y-3">
           <p className="hand text-3xl font-bold text-foreground">{heldToday}</p>
           <div className="flex items-center gap-3">
-            <span className="text-xs uppercase tracking-widest text-coral">Held for today</span>
+            <span className="text-xs uppercase tracking-widest text-coral-ink">Held for today</span>
             <button
               type="button"
               onClick={release}
@@ -104,7 +104,7 @@ export function FocusCard({ className }: { className?: string | undefined }) {
             <button
               type="button"
               onClick={handleHold}
-              className="mt-3 rounded-full border-2 border-ink bg-sky px-4 py-2 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5"
+              className="mt-3 rounded-full border-2 border-ink bg-sky px-4 py-2 text-sm font-semibold text-on-tint lift"
             >
               Hold today's focus
             </button>

@@ -21,7 +21,7 @@ export function NotesBoard({ full = false }: { full?: boolean }) {
         <button
           type="button"
           onClick={() => addNote("")}
-          className="flex min-h-9 items-center gap-1 rounded-md border-2 border-ink bg-butter px-2 text-xs font-semibold text-ink"
+          className="lift inline-flex min-h-8 items-center gap-1 rounded-full border-2 border-ink bg-butter px-3 text-xs font-semibold text-on-tint"
         >
           <Plus className="h-3.5 w-3.5" /> New
         </button>
@@ -48,14 +48,14 @@ export function NotesBoard({ full = false }: { full?: boolean }) {
                 placeholder="Type here…"
                 aria-label="Note text"
                 rows={3}
-                className="hand w-full resize-none bg-transparent pr-6 text-xl leading-snug text-ink outline-none placeholder:text-ink/50"
+                className="hand w-full resize-none bg-transparent pr-6 text-xl leading-snug text-on-tint outline-none placeholder:text-on-tint/55"
               />
               <PinControl note={note} onPin={(day) => pinNote(note.id, day)} />
               <button
                 type="button"
                 aria-label="Delete note"
                 onClick={() => removeNote(note.id)}
-                className="absolute right-1.5 top-1.5 text-ink/60 hover:text-destructive"
+                className="absolute right-1.5 top-1.5 text-on-tint/60 hover:text-on-tint"
               >
                 <Trash2 className="h-4 w-4" />
               </button>
@@ -74,13 +74,13 @@ function PinControl({ note, onPin }: { note: Note; onPin: (day: string | null) =
 
   if (note.day) {
     return (
-      <span className="mt-1 inline-flex items-center gap-1 rounded-full border-2 border-ink bg-background/60 px-2 py-0.5 text-[11px] font-semibold text-ink">
+      <span className="mt-1 inline-flex items-center gap-1 rounded-full border-2 border-current px-2 py-0.5 text-[11px] font-semibold text-on-tint">
         <Pin className="h-3 w-3 fill-current" /> {friendlyDay(note.day, today)}
         <button
           type="button"
           aria-label="Unpin from calendar"
           onClick={() => onPin(null)}
-          className="ml-0.5 text-ink/60 hover:text-ink"
+          className="ml-0.5 opacity-60 hover:opacity-100"
         >
           <X className="h-3 w-3" />
         </button>
@@ -93,7 +93,7 @@ function PinControl({ note, onPin }: { note: Note; onPin: (day: string | null) =
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="mt-1 inline-flex items-center gap-1 text-[11px] text-ink/60 hover:text-ink"
+          className="mt-1 inline-flex items-center gap-1 text-[11px] text-on-tint/70 underline decoration-dashed underline-offset-2 hover:text-on-tint"
         >
           <Pin className="h-3 w-3" /> Pin to date
         </button>

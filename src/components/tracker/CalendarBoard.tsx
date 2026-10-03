@@ -49,7 +49,7 @@ export function EntryRow({
         aria-label={entry.done ? `Mark ${entry.title} not done` : `Mark ${entry.title} done`}
         onClick={() => onUpdate(entry.id, { done: !entry.done })}
         className={cn(
-          "mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md border-2 border-ink text-ink",
+          "mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md border-2 border-ink text-on-tint",
           meta.tint,
         )}
       >
@@ -70,7 +70,9 @@ export function EntryRow({
             <span
               className={cn(
                 "ml-2 whitespace-nowrap rounded-full border border-ink px-1.5 text-[10px] font-semibold uppercase",
-                daysUntil(entry.day, today) <= 1 ? "bg-coral text-ink" : "text-muted-foreground",
+                daysUntil(entry.day, today) <= 1
+                  ? "bg-coral text-on-tint"
+                  : "text-muted-foreground",
               )}
             >
               {deadlineText(entry.day, today)}
@@ -90,7 +92,7 @@ export function EntryRow({
         onClick={() => onUpdate(entry.id, { important: !entry.important })}
         className={cn(
           "shrink-0 transition-colors",
-          entry.important ? "text-coral" : "text-muted-foreground hover:text-coral",
+          entry.important ? "text-coral-ink" : "text-muted-foreground hover:text-coral-ink",
         )}
       >
         <Star className={cn("h-4 w-4", entry.important && "fill-current")} />
@@ -154,8 +156,10 @@ function AddEntryForm({
             aria-checked={kind === k}
             onClick={() => setKind(k)}
             className={cn(
-              "flex items-center gap-1 rounded-full border-2 border-ink px-3 py-1 text-xs text-ink transition-colors",
-              kind === k ? cn(tint, "font-semibold") : "bg-transparent text-foreground",
+              "lift flex min-h-8 items-center gap-1 rounded-full border-2 border-ink px-3 py-1 text-xs",
+              kind === k
+                ? cn(tint, "font-semibold text-on-tint")
+                : "bg-transparent text-foreground",
             )}
           >
             <Icon className="h-3.5 w-3.5" /> {label}
@@ -168,14 +172,14 @@ function AddEntryForm({
           onChange={(e) => setTitle(e.target.value)}
           placeholder={`New ${kindMeta(kind).label.toLowerCase()}…`}
           aria-label="Title"
-          className="min-h-11 min-w-0 flex-1 rounded-lg border-2 border-ink bg-transparent px-3 text-sm outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
+          className="field min-w-0 flex-1"
         />
         <input
           type="time"
           value={time}
           onChange={(e) => setTime(e.target.value)}
           aria-label="Time (optional)"
-          className="min-h-11 w-28 rounded-lg border-2 border-ink bg-transparent px-2 text-sm"
+          className="field w-28 px-2"
         />
       </div>
       <textarea
@@ -193,14 +197,14 @@ function AddEntryForm({
           onClick={() => setImportant((v) => !v)}
           className={cn(
             "flex items-center gap-1 text-sm",
-            important ? "font-semibold text-coral" : "text-muted-foreground",
+            important ? "font-semibold text-coral-ink" : "text-muted-foreground",
           )}
         >
           <Star className={cn("h-4 w-4", important && "fill-current")} /> Important
         </button>
         <button
           type="submit"
-          className="min-h-11 rounded-lg border-2 border-ink bg-butter px-4 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5"
+          className="lift min-h-11 rounded-lg border-2 border-ink bg-butter px-4 text-sm font-semibold text-on-tint"
         >
           Add
         </button>
@@ -242,7 +246,7 @@ export function CalendarBoard() {
           <button
             type="button"
             onClick={() => select(dateOfDayKey(today))}
-            className="rounded-full border-2 border-ink px-3 py-1 text-xs font-semibold text-ink"
+            className="lift inline-flex min-h-8 items-center rounded-full border-2 border-ink px-3 text-xs font-semibold"
           >
             Today
           </button>
@@ -318,7 +322,7 @@ export function CalendarBoard() {
                     noteTint[note.tint],
                   )}
                 >
-                  <p className="hand whitespace-pre-wrap break-words text-lg leading-snug text-ink">
+                  <p className="hand whitespace-pre-wrap break-words text-lg leading-snug text-on-tint">
                     {note.text || "(empty note)"}
                   </p>
                   <button
@@ -326,7 +330,7 @@ export function CalendarBoard() {
                     aria-label="Unpin note from this day"
                     title="Unpin"
                     onClick={() => pinNote(note.id, null)}
-                    className="absolute right-1.5 top-1.5 text-ink/60 hover:text-ink"
+                    className="absolute right-1.5 top-1.5 text-on-tint/60 hover:text-on-tint"
                   >
                     <Pin className="h-4 w-4 fill-current" />
                   </button>

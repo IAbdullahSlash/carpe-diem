@@ -56,7 +56,10 @@ export function GreetingHeader() {
             <h1 className="hand font-bold text-3xl leading-tight sm:text-5xl">
               <span className="marker">{greetingFor(hour, displayName)}</span>
             </h1>
-            <p className="mt-1 truncate text-xs text-muted-foreground sm:text-sm" suppressHydrationWarning>
+            <p
+              className="mt-1 truncate text-xs text-muted-foreground sm:text-sm"
+              suppressHydrationWarning
+            >
               {longDate}
               {mounted ? ` · ${clock} IST · ${night ? "night mode" : "day mode"}` : ""}
             </p>
@@ -88,7 +91,7 @@ export function GreetingHeader() {
             key={item.to}
             to={item.to}
             activeOptions={{ exact: item.to === "/" }}
-            className="rounded-full border-2 border-ink px-3 py-1.5 text-sm transition-transform hover:-translate-y-0.5"
+            className="lift rounded-full border-2 border-ink px-3 py-1.5 text-sm"
             activeProps={{ className: "bg-ink text-primary-foreground font-semibold" }}
           >
             {item.label}
@@ -106,7 +109,7 @@ export function GreetingHeader() {
               await signOut(auth);
               await navigate({ to: "/auth" });
             }}
-            className="flex items-center gap-1.5 rounded-full border-2 border-ink px-3 py-1.5 text-sm transition-transform hover:-translate-y-0.5"
+            className="lift flex items-center gap-1.5 rounded-full border-2 border-ink px-3 py-1.5 text-sm"
           >
             <LogOut className="h-3.5 w-3.5" /> Sign out
           </button>

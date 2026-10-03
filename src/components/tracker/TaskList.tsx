@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Trash2, CheckSquare } from "lucide-react";
+import { Check, Plus, Trash2, CheckSquare } from "lucide-react";
 import { toast } from "sonner";
 import { SketchCard } from "./SketchCard";
 import { cn } from "@/lib/utils";
@@ -32,7 +32,7 @@ export function TaskRow({
         onClick={() => onToggle(task.id)}
         className="grid h-6 w-6 shrink-0 place-items-center rounded-md border-2 border-ink"
       >
-        {task.done ? <span className="hand text-lg leading-none">✓</span> : null}
+        {task.done ? <Check className="h-4 w-4" strokeWidth={3} /> : null}
       </button>
       <span
         className={cn(
@@ -47,14 +47,14 @@ export function TaskRow({
           </span>
         ) : null}
         {pendingSince ? (
-          <span className="ml-2 whitespace-nowrap text-xs font-medium text-coral">
+          <span className="ml-2 whitespace-nowrap text-xs font-medium text-coral-ink">
             {pendingSince}
           </span>
         ) : null}
       </span>
       <span
         className={cn(
-          "hidden shrink-0 rounded-full border-2 border-ink px-2 py-0.5 text-[10px] uppercase text-ink sm:inline",
+          "hidden shrink-0 rounded-full border-2 border-ink px-2 py-0.5 text-[10px] uppercase text-on-tint sm:inline",
           priorityStyles[task.priority],
         )}
       >
@@ -106,8 +106,8 @@ export function TaskList({ full = false }: { full?: boolean }) {
               type="button"
               onClick={() => setFilter(f)}
               className={cn(
-                "rounded-full border-2 border-ink px-2 py-1 text-[11px] capitalize transition-colors",
-                filter === f ? "bg-ink text-primary-foreground" : "bg-transparent text-ink",
+                "lift min-h-8 rounded-full border-2 border-ink px-2.5 text-[11px] capitalize",
+                filter === f ? "bg-ink font-semibold text-primary-foreground" : "bg-transparent",
               )}
             >
               {f}
@@ -122,13 +122,13 @@ export function TaskList({ full = false }: { full?: boolean }) {
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Write a task…"
           aria-label="Task title"
-          className="min-h-11 min-w-0 flex-1 rounded-lg border-2 border-ink bg-transparent px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
+          className="field min-w-0 flex-1"
         />
         <select
           value={priority}
           onChange={(e) => setPriority(e.target.value as Priority)}
           aria-label="Priority"
-          className="min-h-11 rounded-lg border-2 border-ink bg-transparent px-2 text-sm"
+          className="field px-2"
         >
           <option value="low">low</option>
           <option value="normal">normal</option>
@@ -140,12 +140,12 @@ export function TaskList({ full = false }: { full?: boolean }) {
             value={due}
             onChange={(e) => setDue(e.target.value)}
             aria-label="Due date"
-            className="min-h-11 rounded-lg border-2 border-ink bg-transparent px-2 text-sm"
+            className="field px-2"
           />
         ) : null}
         <button
           type="submit"
-          className="flex min-h-11 items-center gap-1 rounded-lg border-2 border-ink bg-butter px-3 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5"
+          className="lift flex min-h-11 items-center gap-1 rounded-lg border-2 border-ink bg-butter px-3 text-sm font-semibold text-on-tint"
         >
           <Plus className="h-4 w-4" /> Add
         </button>

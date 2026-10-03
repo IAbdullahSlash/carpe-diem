@@ -19,7 +19,8 @@ export const Route = createFileRoute("/_authenticated/")({
       { property: "og:title", content: "Carpe Diem" },
       {
         property: "og:description",
-        content: "Pending tasks, goals, habits, quote of the day and notes in one sketchbook dashboard.",
+        content:
+          "Pending tasks, goals, habits, quote of the day and notes in one sketchbook dashboard.",
       },
     ],
   }),

@@ -19,7 +19,7 @@ export function QuoteCard({ compact = false }: { compact?: boolean }) {
           type="button"
           aria-label="Show another quote"
           onClick={() => setOffset((o) => o + 1)}
-          className="grid h-9 w-9 place-items-center rounded-md border-2 border-ink bg-mint"
+          className="lift grid h-9 w-9 place-items-center rounded-md border-2 border-ink bg-mint text-on-tint"
         >
           <Shuffle className="h-4 w-4" />
         </button>

@@ -40,7 +40,7 @@ function BarChart({ bars, unitLabel }: { bars: Bar[]; unitLabel: string }) {
             />
             <span className="text-[10px] text-muted-foreground">{bar.label}</span>
             {bar.caption ? (
-              <span className="text-[9px] uppercase text-muted-foreground">{bar.caption}</span>
+              <span className="text-[10px] uppercase text-muted-foreground">{bar.caption}</span>
             ) : null}
           </div>
         ))}
@@ -144,14 +144,14 @@ export function ProgressPanel() {
             <button
               type="button"
               aria-label="Open progress charts"
-              className="grid h-9 w-9 place-items-center rounded-md border-2 border-ink bg-mint text-ink"
+              className="lift grid h-9 w-9 place-items-center rounded-md border-2 border-ink bg-mint text-on-tint"
             >
               <BarChart3 className="h-4 w-4" />
             </button>
           </DialogTrigger>
-          <DialogContent className="grid-cols-[minmax(0,1fr)] max-w-3xl overflow-hidden">
+          <DialogContent className="grid-cols-[minmax(0,1fr)] overflow-hidden sm:max-w-3xl">
             <DialogHeader>
-              <DialogTitle className="hand text-3xl">Progress charts</DialogTitle>
+              <DialogTitle>Progress charts</DialogTitle>
               <DialogDescription>
                 Tasks completed, from the last {HISTORY_DAYS} days of records.
               </DialogDescription>

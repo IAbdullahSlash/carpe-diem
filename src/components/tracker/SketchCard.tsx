@@ -23,7 +23,9 @@ export function SketchCard({
           <div className="flex min-w-0 items-center gap-2">
             {icon ? <span className="shrink-0 text-ink-soft">{icon}</span> : null}
             <div className="min-w-0">
-              <h2 className="hand font-bold truncate text-2xl leading-tight text-foreground">{title}</h2>
+              <h2 className="hand font-bold truncate text-2xl leading-tight text-foreground">
+                {title}
+              </h2>
               {subtitle ? (
                 <p className="truncate text-xs text-muted-foreground">{subtitle}</p>
               ) : null}

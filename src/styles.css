@@ -67,6 +67,8 @@
   --color-sky: var(--sky);
   --color-butter: var(--butter);
   --color-coral: var(--coral);
+  --color-on-tint: var(--on-tint);
+  --color-coral-ink: var(--coral-ink);
   --font-hand: "Caveat", "Segoe Script", cursive;
   --font-sans: "Karla", ui-sans-serif, system-ui, sans-serif;
 }
@@ -81,12 +83,18 @@
   --sky: oklch(0.87 0.07 235);
   --butter: oklch(0.92 0.11 95);
   --coral: oklch(0.83 0.1 25);
+  /* Text on mint/sky/butter/coral fills — stays dark in both themes. */
+  --on-tint: oklch(0.23 0.02 265);
+  /* Coral as text/icon colour; the --coral fill is too light to read. */
+  --coral-ink: oklch(0.52 0.15 27);
+  /* Behind dialogs; dark in both themes. */
+  --scrim: oklch(0.18 0.02 265 / 55%);
   --background: var(--paper);
   --foreground: var(--ink);
   --card: oklch(0.995 0.008 92);
   --card-foreground: var(--ink);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
+  --popover: var(--card);
+  --popover-foreground: var(--ink);
   --primary: var(--ink);
   --primary-foreground: oklch(0.98 0.01 92);
   --secondary: oklch(0.95 0.02 92);
@@ -115,21 +123,29 @@
   --sidebar-ring: oklch(0.704 0.04 256.788);
 }
 
+:root {
+  color-scheme: light;
+}
+
+/* Native controls (date/time pickers, selects, scrollbars) follow the theme. */
 .dark {
+  color-scheme: dark;
   --paper: oklch(0.21 0.018 265);
   --paper-lines: oklch(0.98 0.01 92 / 8%);
   --ink: oklch(0.94 0.012 92);
   --ink-soft: oklch(0.75 0.02 265);
-  --mint: oklch(0.62 0.09 155);
-  --sky: oklch(0.6 0.08 235);
+  --mint: oklch(0.68 0.09 155);
+  --sky: oklch(0.67 0.08 235);
   --butter: oklch(0.72 0.1 95);
-  --coral: oklch(0.62 0.11 25);
+  --coral: oklch(0.68 0.11 25);
+  --coral-ink: oklch(0.78 0.12 25);
+  --scrim: oklch(0.1 0.02 265 / 70%);
   --background: var(--paper);
   --foreground: var(--ink);
   --card: oklch(0.26 0.02 265);
   --card-foreground: var(--ink);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
+  --popover: var(--card);
+  --popover-foreground: var(--ink);
   --primary: var(--ink);
   --primary-foreground: oklch(0.21 0.018 265);
   --secondary: oklch(0.3 0.02 265);
@@ -170,6 +186,36 @@
     background-image:
       radial-gradient(var(--paper-lines) 1px, transparent 1px);
     background-size: 22px 22px;
+    caret-color: var(--ink);
+    accent-color: var(--ink);
+    scrollbar-color: var(--ink-soft) transparent;
+  }
+
+  ::selection {
+    background-color: var(--butter);
+    color: var(--on-tint);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  /* Overrides `outline-none` on fields so keyboard focus is never invisible. */
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
   }
 }
 
@@ -199,10 +245,36 @@
     transparent 96%
   );
   background-repeat: no-repeat;
+  color: var(--on-tint);
   padding: 0 0.2em;
 }
 
 @utility hand {
   font-family: var(--font-hand);
   letter-spacing: 0.01em;
+}
+
+/* Hand-drawn lift on hover, settles back when pressed. */
+@utility lift {
+  transition: transform 150ms ease;
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+  }
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+}
+
+/* Text inputs, selects and textareas inside cards and forms. */
+@utility field {
+  min-height: 2.75rem;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  background-color: transparent;
+  padding-inline: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--foreground);
+  &::placeholder {
+    color: var(--muted-foreground);
+  }
 }

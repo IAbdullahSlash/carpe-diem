@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Flame, Plus, Trash2 } from "lucide-react";
+import { Check, Flame, Plus, Trash2 } from "lucide-react";
 import { SketchCard } from "./SketchCard";
 import { cn } from "@/lib/utils";
 import { dayLabels, lastNDayKeys } from "@/lib/time";
@@ -31,7 +31,7 @@ export function HabitTracker() {
                   day === today ? "font-bold text-foreground" : "text-muted-foreground",
                 )}
               >
-                <span className="block text-[9px] uppercase">{l.weekday}</span>
+                <span className="block text-[10px] uppercase">{l.weekday}</span>
                 <span className="block text-[11px] leading-tight">{l.day}</span>
               </div>
             );
@@ -61,12 +61,12 @@ export function HabitTracker() {
                     aria-label={`${habit.title} on ${l.weekday} ${l.day} ${l.month}`}
                     onClick={() => toggleHabit(habit.id, day)}
                     className={cn(
-                      "grid h-6 w-6 place-items-center rounded-full border-2 border-ink text-[9px] font-bold text-ink transition-colors",
-                      active ? "bg-mint" : "bg-transparent",
+                      "grid h-6 w-6 place-items-center rounded-full border-2 border-ink transition-colors",
+                      active ? "bg-mint text-on-tint" : "bg-transparent hover:bg-mint/30",
                       day === today && "ring-2 ring-ring ring-offset-1 ring-offset-background",
                     )}
                   >
-                    {active ? "✓" : ""}
+                    {active ? <Check className="h-3.5 w-3.5" strokeWidth={3} /> : null}
                   </button>
                 );
               })}
@@ -96,11 +96,11 @@ export function HabitTracker() {
           onChange={(e) => setTitle(e.target.value)}
           placeholder="New habit…"
           aria-label="New habit"
-          className="min-h-11 min-w-0 flex-1 rounded-lg border-2 border-ink bg-transparent px-3 text-sm"
+          className="field min-w-0 flex-1"
         />
         <button
           type="submit"
-          className="grid min-h-11 w-11 place-items-center rounded-lg border-2 border-ink bg-butter text-ink"
+          className="lift grid min-h-11 w-11 place-items-center rounded-lg border-2 border-ink bg-butter text-on-tint"
           aria-label="Add habit"
         >
           <Plus className="h-4 w-4" />
