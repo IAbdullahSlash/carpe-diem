@@ -14,13 +14,12 @@ export const Route = createFileRoute("/_authenticated/")({
       {
         name: "description",
         content:
-          "A hand-drawn daily tracker: pending tasks, goals, habits, quote of the day and notes, with day/night mode on India time.",
+          "A bold daily tracker: pending tasks, goals, habits, quote of the day and notes, with day/night mode on India time.",
       },
       { property: "og:title", content: "Carpe Diem" },
       {
         property: "og:description",
-        content:
-          "Pending tasks, goals, habits, quote of the day and notes in one sketchbook dashboard.",
+        content: "Pending tasks, goals, habits, quote of the day and notes in one dashboard.",
       },
     ],
   }),

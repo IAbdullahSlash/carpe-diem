@@ -17,13 +17,17 @@ export function SketchCard({
   children?: ReactNode | undefined;
 }) {
   return (
-    <section className={cn("sketch sketch-hover p-4 sm:p-5", className)}>
+    <section className={cn("nb-card p-4 sm:p-5", className)}>
       {(title || action) && (
-        <header className="mb-3 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+        <header className="mb-4 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b-2 border-border pb-3">
           <div className="flex min-w-0 items-center gap-2">
-            {icon ? <span className="shrink-0 text-ink-soft">{icon}</span> : null}
+            {icon ? (
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-base border-2 border-border bg-main text-main-foreground [&_svg]:h-4 [&_svg]:w-4">
+                {icon}
+              </span>
+            ) : null}
             <div className="min-w-0">
-              <h2 className="hand font-bold truncate text-2xl leading-tight text-foreground">
+              <h2 className="truncate text-lg font-bold leading-tight text-foreground sm:text-xl">
                 {title}
               </h2>
               {subtitle ? (

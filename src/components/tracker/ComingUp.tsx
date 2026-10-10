@@ -42,16 +42,13 @@ export function ComingUp({ className }: { className?: string | undefined }) {
       icon={<CalendarClock className="h-5 w-5" />}
       className={className}
       action={
-        <Link
-          to="/calendar"
-          className="lift inline-flex min-h-8 items-center rounded-full border-2 border-ink px-3 text-xs font-semibold"
-        >
+        <Link to="/calendar" className="nb-btn nb-btn-sm bg-card text-foreground">
           Calendar
         </Link>
       }
     >
       {groups.length === 0 ? (
-        <p className="hand text-lg text-muted-foreground">
+        <p className="text-sm font-medium text-muted-foreground">
           Nothing planned this week — add something on the calendar.
         </p>
       ) : (
@@ -60,9 +57,9 @@ export function ComingUp({ className }: { className?: string | undefined }) {
             <div key={group.day}>
               <p
                 className={cn(
-                  "text-xs uppercase tracking-widest",
-                  group.day === today ? "font-bold text-foreground" : "text-muted-foreground",
-                  group.day === "overdue" && "font-bold text-coral-ink",
+                  "nb-label",
+                  group.day === today && "text-foreground",
+                  group.day === "overdue" && "text-coral-ink",
                 )}
               >
                 {group.day === "overdue" ? "Overdue" : friendlyDay(group.day, today)}
@@ -81,7 +78,7 @@ export function ComingUp({ className }: { className?: string | undefined }) {
                 <p
                   key={note.id}
                   className={cn(
-                    "hand mt-1 flex items-start gap-1.5 rounded-md border-2 border-ink px-2 py-1 text-base leading-snug text-on-tint",
+                    "hand mt-1 flex items-start gap-1.5 rounded-base border-2 border-border px-2 py-1 text-lg leading-snug text-on-tint",
                     noteTint[note.tint],
                   )}
                 >

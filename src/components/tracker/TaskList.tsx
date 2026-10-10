@@ -25,18 +25,21 @@ export function TaskRow({
   const today = useTodayKey();
   const pendingSince = task.done ? null : pendingSinceText(task.createdAt, today);
   return (
-    <li className="flex min-h-11 items-center gap-3 border-b border-dashed border-border/60 py-2 last:border-0">
+    <li className="flex min-h-11 items-center gap-3 border-b-2 border-border/15 py-2 last:border-0">
       <button
         type="button"
         aria-label={task.done ? `Mark ${task.title} pending` : `Complete ${task.title}`}
         onClick={() => onToggle(task.id)}
-        className="grid h-6 w-6 shrink-0 place-items-center rounded-md border-2 border-ink"
+        className={cn(
+          "grid h-7 w-7 shrink-0 place-items-center rounded-sm border-2 border-border",
+          task.done ? "bg-mint text-on-tint" : "bg-card",
+        )}
       >
         {task.done ? <Check className="h-4 w-4" strokeWidth={3} /> : null}
       </button>
       <span
         className={cn(
-          "min-w-0 flex-1 break-words text-sm",
+          "min-w-0 flex-1 break-words text-sm font-medium",
           task.done && "text-muted-foreground line-through",
         )}
       >
@@ -54,7 +57,7 @@ export function TaskRow({
       </span>
       <span
         className={cn(
-          "hidden shrink-0 rounded-full border-2 border-ink px-2 py-0.5 text-[10px] uppercase text-on-tint sm:inline",
+          "nb-badge hidden shrink-0 text-on-tint sm:inline-flex",
           priorityStyles[task.priority],
         )}
       >
@@ -64,7 +67,7 @@ export function TaskRow({
         type="button"
         aria-label={`Delete ${task.title}`}
         onClick={() => onRemove(task.id)}
-        className="shrink-0 text-muted-foreground transition-colors hover:text-destructive"
+        className="nb-ghost hover:text-destructive"
       >
         <Trash2 className="h-4 w-4" />
       </button>
@@ -99,16 +102,14 @@ export function TaskList({ full = false }: { full?: boolean }) {
       subtitle={`${pending.length} to go · ${tasks.length - pending.length} done`}
       icon={<CheckSquare className="h-5 w-5" />}
       action={
-        <div className="flex gap-1">
+        <div className="nb-segment">
           {(["pending", "done", "all"] as const).map((f) => (
             <button
               key={f}
               type="button"
+              aria-pressed={filter === f}
               onClick={() => setFilter(f)}
-              className={cn(
-                "lift min-h-8 rounded-full border-2 border-ink px-2.5 text-[11px] capitalize",
-                filter === f ? "bg-ink font-semibold text-primary-foreground" : "bg-transparent",
-              )}
+              className="nb-segment-item capitalize"
             >
               {f}
             </button>
@@ -122,13 +123,13 @@ export function TaskList({ full = false }: { full?: boolean }) {
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Write a task…"
           aria-label="Task title"
-          className="field min-w-0 flex-1"
+          className="nb-field min-w-0 flex-1"
         />
         <select
           value={priority}
           onChange={(e) => setPriority(e.target.value as Priority)}
           aria-label="Priority"
-          className="field px-2"
+          className="nb-field px-2"
         >
           <option value="low">low</option>
           <option value="normal">normal</option>
@@ -140,19 +141,18 @@ export function TaskList({ full = false }: { full?: boolean }) {
             value={due}
             onChange={(e) => setDue(e.target.value)}
             aria-label="Due date"
-            className="field px-2"
+            className="nb-field px-2"
           />
         ) : null}
-        <button
-          type="submit"
-          className="lift flex min-h-11 items-center gap-1 rounded-lg border-2 border-ink bg-butter px-3 text-sm font-semibold text-on-tint"
-        >
+        <button type="submit" className="nb-btn px-3">
           <Plus className="h-4 w-4" /> Add
         </button>
       </form>
 
       {shown.length === 0 ? (
-        <p className="hand text-lg text-muted-foreground">Nothing here — enjoy the blank page.</p>
+        <p className="text-sm font-medium text-muted-foreground">
+          Nothing here — enjoy the blank page.
+        </p>
       ) : (
         <ul className={cn("min-w-0", !full && "max-h-72 overflow-y-auto pr-1")}>
           {shown.map((task) => (

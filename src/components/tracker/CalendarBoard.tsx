@@ -43,13 +43,13 @@ export function EntryRow({
   const Icon = meta.icon;
   const countdown = entry.kind === "deadline" && !entry.done;
   return (
-    <li className="flex min-h-11 items-start gap-3 border-b border-dashed border-border/60 py-2 last:border-0">
+    <li className="flex min-h-11 items-start gap-3 border-b-2 border-border/15 py-2 last:border-0">
       <button
         type="button"
         aria-label={entry.done ? `Mark ${entry.title} not done` : `Mark ${entry.title} done`}
         onClick={() => onUpdate(entry.id, { done: !entry.done })}
         className={cn(
-          "mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md border-2 border-ink text-on-tint",
+          "mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-sm border-2 border-border text-on-tint",
           meta.tint,
         )}
       >
@@ -69,10 +69,10 @@ export function EntryRow({
           {countdown ? (
             <span
               className={cn(
-                "ml-2 whitespace-nowrap rounded-full border border-ink px-1.5 text-[10px] font-semibold uppercase",
+                "nb-badge ml-2",
                 daysUntil(entry.day, today) <= 1
                   ? "bg-coral text-on-tint"
-                  : "text-muted-foreground",
+                  : "bg-card text-muted-foreground",
               )}
             >
               {deadlineText(entry.day, today)}
@@ -91,8 +91,8 @@ export function EntryRow({
         aria-label={entry.important ? "Unmark important" : "Mark important"}
         onClick={() => onUpdate(entry.id, { important: !entry.important })}
         className={cn(
-          "shrink-0 transition-colors",
-          entry.important ? "text-coral-ink" : "text-muted-foreground hover:text-coral-ink",
+          "nb-ghost",
+          entry.important ? "text-coral-ink hover:text-coral-ink" : "hover:text-coral-ink",
         )}
       >
         <Star className={cn("h-4 w-4", entry.important && "fill-current")} />
@@ -101,7 +101,7 @@ export function EntryRow({
         type="button"
         aria-label={`Delete ${entry.title}`}
         onClick={() => onRemove(entry.id)}
-        className="shrink-0 text-muted-foreground transition-colors hover:text-destructive"
+        className="nb-ghost hover:text-destructive"
       >
         <Trash2 className="h-4 w-4" />
       </button>
@@ -146,8 +146,8 @@ function AddEntryForm({
   };
 
   return (
-    <form onSubmit={submit} className="mt-4 space-y-2 border-t-2 border-ink/20 pt-4">
-      <div className="flex flex-wrap gap-1" role="radiogroup" aria-label="Entry type">
+    <form onSubmit={submit} className="mt-4 space-y-3 border-t-2 border-border pt-4">
+      <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Entry type">
         {KINDS.map(({ kind: k, label, icon: Icon, tint }) => (
           <button
             key={k}
@@ -156,10 +156,8 @@ function AddEntryForm({
             aria-checked={kind === k}
             onClick={() => setKind(k)}
             className={cn(
-              "lift flex min-h-8 items-center gap-1 rounded-full border-2 border-ink px-3 py-1 text-xs",
-              kind === k
-                ? cn(tint, "font-semibold text-on-tint")
-                : "bg-transparent text-foreground",
+              "nb-btn nb-btn-sm",
+              kind === k ? cn(tint, "text-on-tint") : "bg-card text-foreground",
             )}
           >
             <Icon className="h-3.5 w-3.5" /> {label}
@@ -172,14 +170,14 @@ function AddEntryForm({
           onChange={(e) => setTitle(e.target.value)}
           placeholder={`New ${kindMeta(kind).label.toLowerCase()}…`}
           aria-label="Title"
-          className="field min-w-0 flex-1"
+          className="nb-field min-w-0 flex-1"
         />
         <input
           type="time"
           value={time}
           onChange={(e) => setTime(e.target.value)}
           aria-label="Time (optional)"
-          className="field w-28 px-2"
+          className="nb-field w-28 px-2"
         />
       </div>
       <textarea
@@ -188,7 +186,7 @@ function AddEntryForm({
         placeholder="Details (optional)"
         aria-label="Details"
         rows={2}
-        className="w-full resize-none rounded-lg border-2 border-ink bg-transparent px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
+        className="nb-field w-full resize-none"
       />
       <div className="flex items-center justify-between gap-2">
         <button
@@ -196,16 +194,13 @@ function AddEntryForm({
           aria-pressed={important}
           onClick={() => setImportant((v) => !v)}
           className={cn(
-            "flex items-center gap-1 text-sm",
-            important ? "font-semibold text-coral-ink" : "text-muted-foreground",
+            "nb-btn nb-btn-sm",
+            important ? "bg-coral text-on-tint" : "bg-card text-foreground",
           )}
         >
           <Star className={cn("h-4 w-4", important && "fill-current")} /> Important
         </button>
-        <button
-          type="submit"
-          className="lift min-h-11 rounded-lg border-2 border-ink bg-butter px-4 text-sm font-semibold text-on-tint"
-        >
+        <button type="submit" className="nb-btn">
           Add
         </button>
       </div>
@@ -246,7 +241,7 @@ export function CalendarBoard() {
           <button
             type="button"
             onClick={() => select(dateOfDayKey(today))}
-            className="lift inline-flex min-h-8 items-center rounded-full border-2 border-ink px-3 text-xs font-semibold"
+            className="nb-btn nb-btn-sm bg-card text-foreground"
           >
             Today
           </button>
@@ -265,18 +260,19 @@ export function CalendarBoard() {
             important: (date) => importantDays.has(dayKeyOfDate(date)),
           }}
           modifiersClassNames={{
-            busy: "after:pointer-events-none after:absolute after:bottom-1 after:left-1/2 after:h-1.5 after:w-1.5 after:-translate-x-1/2 after:rounded-full after:bg-sky after:ring-1 after:ring-ink",
+            busy: "after:pointer-events-none after:absolute after:bottom-1 after:left-1/2 after:h-1.5 after:w-1.5 after:-translate-x-1/2 after:rounded-full after:bg-sky after:ring-1 after:ring-border",
             important: "after:!bg-coral",
           }}
           className="w-full bg-transparent p-0 [--cell-size:2.6rem] sm:[--cell-size:3rem]"
           classNames={{ root: "w-full" }}
         />
-        <div className="mt-3 flex flex-wrap gap-3 text-xs text-muted-foreground">
+        <div className="mt-3 flex flex-wrap gap-3 text-xs font-medium text-muted-foreground">
           <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-sky ring-1 ring-ink" /> Has entries
+            <span className="h-2.5 w-2.5 rounded-full bg-sky ring-1 ring-border" /> Has entries
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-coral ring-1 ring-ink" /> Something important
+            <span className="h-2.5 w-2.5 rounded-full bg-coral ring-1 ring-border" /> Something
+            important
           </span>
         </div>
       </SketchCard>
@@ -292,7 +288,9 @@ export function CalendarBoard() {
         icon={<NotebookPen className="h-5 w-5" />}
       >
         {dayEntries.length === 0 && dayNotes.length === 0 ? (
-          <p className="hand text-lg text-muted-foreground">Nothing planned — a clear day.</p>
+          <p className="text-sm font-medium text-muted-foreground">
+            Nothing planned — a clear day.
+          </p>
         ) : null}
 
         {dayEntries.length ? (
@@ -310,15 +308,13 @@ export function CalendarBoard() {
 
         {dayNotes.length ? (
           <div className="mt-3">
-            <p className="mb-2 text-xs uppercase tracking-widest text-muted-foreground">
-              Pinned sticky notes
-            </p>
+            <p className="nb-label mb-2">Pinned sticky notes</p>
             <div className="grid gap-2 sm:grid-cols-2">
               {dayNotes.map((note) => (
                 <div
                   key={note.id}
                   className={cn(
-                    "relative rounded-md border-2 border-ink p-2 pr-7 shadow-[3px_3px_0_0_var(--ink)]",
+                    "relative rounded-base border-2 border-border p-2 pr-9 shadow-[3px_3px_0_0_var(--border)]",
                     noteTint[note.tint],
                   )}
                 >
@@ -330,7 +326,7 @@ export function CalendarBoard() {
                     aria-label="Unpin note from this day"
                     title="Unpin"
                     onClick={() => pinNote(note.id, null)}
-                    className="absolute right-1.5 top-1.5 text-on-tint/60 hover:text-on-tint"
+                    className="nb-ghost absolute right-1 top-1 text-on-tint/70 hover:text-on-tint"
                   >
                     <Pin className="h-4 w-4 fill-current" />
                   </button>

@@ -6,18 +6,19 @@ export function renderErrorPage(): string {
     <title>This page didn't load</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
-      /* Standalone (no app CSS), so the sketchbook palette is inlined here. */
-      :root { --paper: oklch(0.976 0.014 92.5); --card: oklch(0.995 0.008 92); --ink: oklch(0.23 0.02 265); --ink-soft: oklch(0.46 0.02 265); --mint: oklch(0.88 0.09 155); --butter: oklch(0.92 0.11 95); --on-tint: oklch(0.23 0.02 265); color-scheme: light dark; }
-      @media (prefers-color-scheme: dark) { :root { --paper: oklch(0.21 0.018 265); --card: oklch(0.26 0.02 265); --ink: oklch(0.94 0.012 92); --ink-soft: oklch(0.75 0.02 265); --mint: oklch(0.68 0.09 155); --butter: oklch(0.72 0.1 95); } }
-      body { font: 15px/1.5 "Karla", ui-sans-serif, system-ui, sans-serif; background: var(--paper) radial-gradient(oklch(0.9 0.02 240 / 45%) 1px, transparent 1px) 0 0 / 22px 22px; color: var(--ink); display: grid; place-items: center; min-height: 100vh; margin: 0; padding: 1rem; box-sizing: border-box; }
-      .card { max-width: 28rem; width: 100%; text-align: center; padding: 2rem 1.5rem; background: var(--card); border: 2px solid var(--ink); border-radius: 14px 22px 16px 20px; box-shadow: 4px 5px 0 0 var(--ink); box-sizing: border-box; }
-      h1 { font: 700 2rem/1.15 "Caveat", "Segoe Script", cursive; margin: 0 0 0.75rem; }
-      h1 span { background: linear-gradient(100deg, transparent 2%, var(--butter) 2%, var(--butter) 96%, transparent 96%) no-repeat; color: var(--on-tint); padding: 0 0.2em; }
-      p { color: var(--ink-soft); margin: 0 0 1.5rem; }
-      .actions { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
-      a, button { min-height: 2.75rem; display: inline-flex; align-items: center; padding: 0 1.1rem; border-radius: 999px; font: 600 0.875rem/1 inherit; font-family: inherit; cursor: pointer; text-decoration: none; border: 2px solid var(--ink); color: var(--ink); background: transparent; }
-      .primary { background: var(--mint); color: var(--on-tint); }
-      a:focus-visible, button:focus-visible { outline: 2px solid var(--ink-soft); outline-offset: 2px; }
+      /* Standalone (no app CSS), so the neobrutalism palette is inlined here. */
+      :root { --bg: oklch(0.968 0.065 102.3); --card: oklch(1 0 0); --fg: oklch(0 0 0); --muted: oklch(0.38 0 0); --main: oklch(0.86 0.176 92.4); --border: oklch(0 0 0); --dots: oklch(0 0 0 / 12%); color-scheme: light dark; }
+      @media (prefers-color-scheme: dark) { :root { --bg: oklch(0.25 0.012 95); --card: oklch(0.32 0.012 95); --fg: oklch(0.95 0.01 95); --muted: oklch(0.78 0.01 95); --dots: oklch(1 0 0 / 7%); } }
+      body { font: 500 15px/1.5 "Karla", ui-sans-serif, system-ui, sans-serif; background: var(--bg) radial-gradient(var(--dots) 1px, transparent 1px) 0 0 / 22px 22px; color: var(--fg); display: grid; place-items: center; min-height: 100vh; margin: 0; padding: 1rem; box-sizing: border-box; }
+      .card { max-width: 28rem; width: 100%; text-align: center; padding: 2rem 1.5rem; background: var(--card); border: 2px solid var(--border); border-radius: 5px; box-shadow: 4px 4px 0 0 var(--border); box-sizing: border-box; }
+      h1 { font-size: 1.5rem; line-height: 1.2; font-weight: 700; margin: 0 0 0.75rem; }
+      h1 span { background: var(--main); color: #000; padding: 0 0.2em; }
+      p { color: var(--muted); margin: 0 0 1.5rem; }
+      .actions { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+      a, button { min-height: 2.75rem; display: inline-flex; align-items: center; padding: 0 1rem; border-radius: 5px; font: 700 0.875rem/1 inherit; font-family: inherit; cursor: pointer; text-decoration: none; border: 2px solid var(--border); color: var(--fg); background: var(--card); box-shadow: 4px 4px 0 0 var(--border); transition: transform 120ms ease, box-shadow 120ms ease; }
+      a:hover, button:hover { transform: translate(4px, 4px); box-shadow: none; }
+      .primary { background: var(--main); color: #000; }
+      a:focus-visible, button:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
     </style>
   </head>
   <body>

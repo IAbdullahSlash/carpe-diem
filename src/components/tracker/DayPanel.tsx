@@ -30,17 +30,18 @@ export function MoodCard({ className }: { className?: string | undefined }) {
             key={m}
             type="button"
             aria-label={`Rate day ${i + 1} of 5`}
+            aria-pressed={current === i}
             onClick={() => setMoods((prev) => ({ ...prev, [today]: i }))}
             className={cn(
-              "grid h-12 w-12 place-items-center rounded-full border-2 border-ink text-xl lift",
-              current === i ? "bg-butter" : "bg-transparent",
+              "nb-btn nb-icon h-12 w-12 text-xl",
+              current === i ? "bg-main" : "bg-card",
             )}
           >
             {m}
           </button>
         ))}
       </div>
-      <p className="mt-2 text-xs text-muted-foreground">
+      <p className="mt-3 text-xs font-medium text-muted-foreground">
         {current === undefined ? "Pick a face for today." : "Saved for today."}
       </p>
     </SketchCard>
@@ -81,11 +82,11 @@ export function FocusCard({ className }: { className?: string | undefined }) {
         <div className="space-y-3">
           <p className="hand text-3xl font-bold text-foreground">{heldToday}</p>
           <div className="flex items-center gap-3">
-            <span className="text-xs uppercase tracking-widest text-coral-ink">Held for today</span>
+            <span className="nb-badge bg-coral text-on-tint">Held for today</span>
             <button
               type="button"
               onClick={release}
-              className="text-xs underline decoration-dashed underline-offset-4 text-foreground"
+              className="nb-btn nb-btn-sm bg-card text-foreground"
             >
               Release
             </button>
@@ -98,14 +99,10 @@ export function FocusCard({ className }: { className?: string | undefined }) {
             onChange={(e) => setFocus((prev) => ({ ...prev, [today]: e.target.value }))}
             placeholder="The one thing that matters…"
             aria-label="Main focus today"
-            className="hand min-h-11 w-full border-b-2 border-dashed border-ink bg-transparent text-2xl outline-none placeholder:text-muted-foreground"
+            className="nb-field hand w-full text-2xl"
           />
           {current.trim() ? (
-            <button
-              type="button"
-              onClick={handleHold}
-              className="mt-3 rounded-full border-2 border-ink bg-sky px-4 py-2 text-sm font-semibold text-on-tint lift"
-            >
+            <button type="button" onClick={handleHold} className="nb-btn mt-3">
               Hold today's focus
             </button>
           ) : null}

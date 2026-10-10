@@ -53,29 +53,27 @@ export function GreetingHeader() {
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-start">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4">
           <div className="min-w-0">
-            <h1 className="hand font-bold text-3xl leading-tight sm:text-5xl">
+            <h1 className="text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl">
               <span className="marker">{greetingFor(hour, displayName)}</span>
             </h1>
             <p
-              className="mt-1 truncate text-xs text-muted-foreground sm:text-sm"
+              className="mt-2 truncate text-xs font-medium text-muted-foreground sm:text-sm"
               suppressHydrationWarning
             >
               {longDate}
               {mounted ? ` · ${clock} IST · ${night ? "night mode" : "day mode"}` : ""}
             </p>
           </div>
-          <div className="flex shrink-0 gap-1 rounded-full border-2 border-ink p-1">
+          <div className="nb-segment shrink-0">
             {MODES.map(({ mode: m, icon: Icon, label }) => (
               <button
                 key={m}
                 type="button"
                 aria-label={label}
+                aria-pressed={mode === m}
                 title={label}
                 onClick={() => setMode(m)}
-                className={cn(
-                  "grid h-9 w-9 place-items-center rounded-full transition-colors",
-                  mode === m ? "bg-ink text-primary-foreground" : "text-ink",
-                )}
+                className="nb-segment-item h-9 w-9 px-0"
               >
                 <Icon className="h-4 w-4" />
               </button>
@@ -85,21 +83,22 @@ export function GreetingHeader() {
         <QuoteCard compact />
       </div>
 
-      <nav className="mt-4 flex flex-wrap gap-2">
+      <nav className="mt-5 flex flex-wrap gap-3">
         {NAV.map((item) => (
           <Link
             key={item.to}
             to={item.to}
             activeOptions={{ exact: item.to === "/" }}
-            className="lift rounded-full border-2 border-ink px-3 py-1.5 text-sm"
-            activeProps={{ className: "bg-ink text-primary-foreground font-semibold" }}
+            className="nb-btn nb-btn-sm text-sm"
+            inactiveProps={{ className: "bg-card text-foreground" }}
+            activeProps={{ className: "bg-main text-main-foreground" }}
           >
             {item.label}
           </Link>
         ))}
         <div className="ml-auto flex items-center gap-2">
           {displayName ? (
-            <span className="hidden max-w-[12rem] truncate text-xs text-muted-foreground sm:block">
+            <span className="hidden max-w-[12rem] truncate text-xs font-bold text-muted-foreground sm:block">
               {displayName}
             </span>
           ) : null}
@@ -109,7 +108,7 @@ export function GreetingHeader() {
               await signOut(auth);
               await navigate({ to: "/auth" });
             }}
-            className="lift flex items-center gap-1.5 rounded-full border-2 border-ink px-3 py-1.5 text-sm"
+            className="nb-btn nb-btn-sm bg-card text-sm text-foreground"
           >
             <LogOut className="h-3.5 w-3.5" /> Sign out
           </button>

@@ -35,7 +35,7 @@ function BarChart({ bars, unitLabel }: { bars: Bar[]; unitLabel: string }) {
             </span>
             <div
               title={`${bar.value} ${unitLabel}`}
-              className="w-full rounded-t-md border-2 border-ink bg-sky transition-[height] duration-500"
+              className="w-full rounded-t-sm border-2 border-border bg-sky transition-[height] duration-500"
               style={{ height: `${Math.max(6, (bar.value / max) * 120)}px` }}
             />
             <span className="text-[10px] text-muted-foreground">{bar.label}</span>
@@ -144,7 +144,7 @@ export function ProgressPanel() {
             <button
               type="button"
               aria-label="Open progress charts"
-              className="lift grid h-9 w-9 place-items-center rounded-md border-2 border-ink bg-mint text-on-tint"
+              className="nb-btn nb-btn-sm nb-icon bg-mint text-on-tint"
             >
               <BarChart3 className="h-4 w-4" />
             </button>
@@ -184,6 +184,8 @@ export function ProgressPanel() {
         <div className="relative h-28 w-28 shrink-0">
           <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90">
             <circle cx="50" cy="50" r="42" fill="none" stroke="var(--muted)" strokeWidth="10" />
+            <circle cx="50" cy="50" r="47" fill="none" stroke="var(--border)" strokeWidth="2" />
+            <circle cx="50" cy="50" r="37" fill="none" stroke="var(--border)" strokeWidth="2" />
             <circle
               cx="50"
               cy="50"
@@ -191,26 +193,28 @@ export function ProgressPanel() {
               fill="none"
               stroke="var(--mint)"
               strokeWidth="10"
-              strokeLinecap="round"
+              strokeLinecap="butt"
               strokeDasharray={circumference}
               strokeDashoffset={circumference * (1 - pct / 100)}
               className="transition-all duration-700"
             />
           </svg>
-          <span className="hand absolute inset-0 grid place-items-center text-3xl">{pct}%</span>
+          <span className="absolute inset-0 grid place-items-center text-2xl font-extrabold">
+            {pct}%
+          </span>
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm font-medium text-muted-foreground">
             {tasksDoneToday} of {tasksToday} tasks done today
           </p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm font-medium text-muted-foreground">
             {habitsDone} of {habits.length} habits ticked
           </p>
           <div className="mt-3 flex h-20 items-end gap-2">
             {counts.map((c, i) => (
               <div key={week[i]} className="flex min-w-0 flex-1 flex-col items-center gap-1">
                 <div
-                  className="w-full rounded-t-md border-2 border-ink bg-sky transition-[height] duration-500"
+                  className="w-full rounded-t-sm border-2 border-border bg-sky transition-[height] duration-500"
                   style={{ height: `${Math.max(6, (c / max) * 60)}px` }}
                 />
                 <span className="text-[10px] text-muted-foreground">

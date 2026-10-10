@@ -18,19 +18,16 @@ import { useTheme } from "@/lib/use-theme";
 function NotFoundComponent() {
   return (
     <div className="grid min-h-screen place-items-center px-4">
-      <div className="sketch max-w-md p-6 text-center sm:p-8">
-        <h1 className="hand font-bold text-6xl leading-none text-foreground">404</h1>
-        <h2 className="hand font-bold mt-3 text-3xl leading-tight text-foreground">
+      <div className="nb-card max-w-md p-6 text-center sm:p-8">
+        <h1 className="text-6xl font-extrabold leading-none text-foreground">404</h1>
+        <h2 className="mt-4 text-2xl leading-tight text-foreground">
           <span className="marker">Page not found</span>
         </h2>
         <p className="mt-3 text-sm text-muted-foreground">
           This page isn't in the notebook — it may have moved.
         </p>
         <div className="mt-6">
-          <Link
-            to="/"
-            className="inline-flex min-h-11 items-center justify-center rounded-full border-2 border-ink bg-mint px-4 text-sm font-semibold text-on-tint lift"
-          >
+          <Link to="/" className="nb-btn">
             Go home
           </Link>
         </div>
@@ -45,8 +42,8 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 
   return (
     <div className="grid min-h-screen place-items-center px-4">
-      <div className="sketch max-w-md p-6 text-center sm:p-8">
-        <h1 className="hand text-3xl leading-tight text-foreground">
+      <div className="nb-card max-w-md p-6 text-center sm:p-8">
+        <h1 className="text-2xl leading-tight text-foreground">
           <span className="marker">This page didn't load</span>
         </h1>
         <p className="mt-3 text-sm text-muted-foreground">
@@ -58,14 +55,11 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
               router.invalidate();
               reset();
             }}
-            className="inline-flex min-h-11 items-center justify-center rounded-full border-2 border-ink bg-mint px-4 text-sm font-semibold text-on-tint lift"
+            className="nb-btn"
           >
             Try again
           </button>
-          <a
-            href="/"
-            className="inline-flex min-h-11 items-center justify-center rounded-full border-2 border-ink px-4 text-sm font-semibold text-foreground lift"
-          >
+          <a href="/" className="nb-btn bg-card text-foreground">
             Go home
           </a>
         </div>
@@ -82,19 +76,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "Carpe Diem" },
       {
         name: "description",
-        content: "A hand-drawn daily tracker for tasks, goals, habits and notes.",
+        content: "A bold daily tracker for tasks, goals, habits and notes.",
       },
       { name: "author", content: "Abdullah" },
       { property: "og:title", content: "Carpe Diem" },
       {
         property: "og:description",
-        content: "A hand-drawn daily tracker for tasks, goals, habits and notes.",
+        content: "A bold daily tracker for tasks, goals, habits and notes.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      // Browser chrome matches the paper colour in each theme.
-      { name: "theme-color", content: "#f9f6ee", media: "(prefers-color-scheme: light)" },
-      { name: "theme-color", content: "#1c1f27", media: "(prefers-color-scheme: dark)" },
+      // Browser chrome matches the page colour in each theme.
+      { name: "theme-color", content: "#fdf7c5", media: "(prefers-color-scheme: light)" },
+      { name: "theme-color", content: "#23221b", media: "(prefers-color-scheme: dark)" },
     ],
     links: [
       {
@@ -105,7 +99,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Karla:wght@400;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Karla:wght@400;500;600;700;800&display=swap",
       },
       { rel: "icon", type: "image/png", href: "/favicon.png" },
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },

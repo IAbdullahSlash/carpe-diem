@@ -35,7 +35,7 @@ export function GoalsCard({ className }: { className?: string | undefined }) {
       {activeGoal ? (
         <div className="flex items-center justify-between gap-2">
           <p className="truncate text-sm font-semibold text-foreground">{activeGoal.title}</p>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <button
               type="button"
               aria-label="Mark goal achieved"
@@ -44,7 +44,7 @@ export function GoalsCard({ className }: { className?: string | undefined }) {
                 await bumpGoal(activeGoal.id, activeGoal.target - activeGoal.current);
                 toast.success("Goal achieved");
               }}
-              className="lift grid h-9 w-9 place-items-center rounded-md border-2 border-ink bg-mint text-on-tint"
+              className="nb-btn nb-btn-sm nb-icon bg-mint text-on-tint"
             >
               <Check className="h-3.5 w-3.5" />
             </button>
@@ -52,14 +52,14 @@ export function GoalsCard({ className }: { className?: string | undefined }) {
               type="button"
               aria-label="Delete goal"
               onClick={() => removeGoal(activeGoal.id)}
-              className="lift grid h-9 w-9 place-items-center rounded-md border-2 border-ink text-muted-foreground hover:text-destructive"
+              className="nb-btn nb-btn-sm nb-icon bg-card text-foreground hover:text-destructive"
             >
               <Trash2 className="h-3.5 w-3.5" />
             </button>
           </div>
         </div>
       ) : (
-        <p className="py-4 text-center text-sm text-muted-foreground">
+        <p className="py-4 text-center text-sm font-medium text-muted-foreground">
           No active goal yet — add one below.
         </p>
       )}
@@ -71,12 +71,9 @@ export function GoalsCard({ className }: { className?: string | undefined }) {
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Write your goal…"
             aria-label="Goal title"
-            className="field min-w-0 flex-1"
+            className="nb-field min-w-0 flex-1"
           />
-          <button
-            type="submit"
-            className="lift min-h-11 rounded-lg border-2 border-ink bg-butter px-4 text-sm font-semibold text-on-tint"
-          >
+          <button type="submit" className="nb-btn">
             Add
           </button>
         </div>

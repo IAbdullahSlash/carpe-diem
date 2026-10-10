@@ -18,28 +18,25 @@ export function NotesBoard({ full = false }: { full?: boolean }) {
       subtitle={`${notes.length} note${notes.length === 1 ? "" : "s"}`}
       icon={<StickyNote className="h-5 w-5" />}
       action={
-        <button
-          type="button"
-          onClick={() => addNote("")}
-          className="lift inline-flex min-h-8 items-center gap-1 rounded-full border-2 border-ink bg-butter px-3 text-xs font-semibold text-on-tint"
-        >
+        <button type="button" onClick={() => addNote("")} className="nb-btn nb-btn-sm">
           <Plus className="h-3.5 w-3.5" /> New
         </button>
       }
     >
       {notes.length === 0 ? (
-        <p className="hand text-lg text-muted-foreground">No notes yet — jot something down.</p>
+        <p className="text-sm font-medium text-muted-foreground">
+          No notes yet — jot something down.
+        </p>
       ) : (
         <div
           className={cn("grid gap-3", full ? "sm:grid-cols-2 xl:grid-cols-3" : "sm:grid-cols-2")}
         >
-          {notes.map((note, i) => (
+          {notes.map((note) => (
             <div
               key={note.id}
               className={cn(
-                "relative rounded-md border-2 border-ink p-2 shadow-[3px_3px_0_0_var(--ink)]",
+                "relative rounded-base border-2 border-border p-3 shadow-[4px_4px_0_0_var(--border)]",
                 noteTint[note.tint],
-                i % 2 ? "rotate-[0.6deg]" : "-rotate-[0.6deg]",
               )}
             >
               <textarea
@@ -48,14 +45,14 @@ export function NotesBoard({ full = false }: { full?: boolean }) {
                 placeholder="Type here…"
                 aria-label="Note text"
                 rows={3}
-                className="hand w-full resize-none bg-transparent pr-6 text-xl leading-snug text-on-tint outline-none placeholder:text-on-tint/55"
+                className="hand w-full resize-none bg-transparent pr-8 text-xl leading-snug text-on-tint outline-none placeholder:text-on-tint/55"
               />
               <PinControl note={note} onPin={(day) => pinNote(note.id, day)} />
               <button
                 type="button"
                 aria-label="Delete note"
                 onClick={() => removeNote(note.id)}
-                className="absolute right-1.5 top-1.5 text-on-tint/60 hover:text-on-tint"
+                className="nb-ghost absolute right-1 top-1 text-on-tint/70 hover:text-on-tint"
               >
                 <Trash2 className="h-4 w-4" />
               </button>
@@ -74,7 +71,7 @@ function PinControl({ note, onPin }: { note: Note; onPin: (day: string | null) =
 
   if (note.day) {
     return (
-      <span className="mt-1 inline-flex items-center gap-1 rounded-full border-2 border-current px-2 py-0.5 text-[11px] font-semibold text-on-tint">
+      <span className="nb-badge mt-1 bg-card text-foreground">
         <Pin className="h-3 w-3 fill-current" /> {friendlyDay(note.day, today)}
         <button
           type="button"
@@ -93,7 +90,7 @@ function PinControl({ note, onPin }: { note: Note; onPin: (day: string | null) =
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="mt-1 inline-flex items-center gap-1 text-[11px] text-on-tint/70 underline decoration-dashed underline-offset-2 hover:text-on-tint"
+          className="nb-badge mt-1 cursor-pointer border-on-tint bg-transparent text-on-tint hover:bg-card hover:text-foreground"
         >
           <Pin className="h-3 w-3" /> Pin to date
         </button>

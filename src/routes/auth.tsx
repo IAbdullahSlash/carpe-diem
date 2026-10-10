@@ -113,18 +113,18 @@ function AuthPage() {
 
   return (
     <main className="mx-auto grid min-h-screen w-full max-w-md place-items-center px-4 py-10">
-      <div className="sketch w-full p-6 sm:p-7">
-        <h1 className="hand font-bold text-4xl leading-tight text-foreground">
+      <div className="nb-card w-full p-6 sm:p-7">
+        <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-foreground">
           <span className="marker">Carpe Diem</span>
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <p className="mt-3 text-sm font-medium text-muted-foreground">
           {mode === "signin"
             ? "Sign in to load your tasks, goals, habits and notes."
             : "Create your account to start tracking."}
         </p>
 
         {error && (
-          <div className="mt-4 rounded-lg border-2 border-coral-ink bg-coral/25 px-4 py-3 text-sm text-foreground">
+          <div className="mt-4 rounded-base border-2 border-border bg-coral px-4 py-3 text-sm font-bold text-on-tint">
             {error}
           </div>
         )}
@@ -141,7 +141,7 @@ function AuthPage() {
                   placeholder="First name"
                   aria-label="First name"
                   autoComplete="given-name"
-                  className="field w-full"
+                  className="nb-field w-full"
                 />
                 <input
                   type="text"
@@ -151,7 +151,7 @@ function AuthPage() {
                   placeholder="Second name"
                   aria-label="Second name"
                   autoComplete="family-name"
-                  className="field w-full"
+                  className="nb-field w-full"
                 />
               </div>
             </>
@@ -164,7 +164,7 @@ function AuthPage() {
             placeholder="you@email.com"
             aria-label="Email"
             autoComplete="email"
-            className="field w-full"
+            className="nb-field w-full"
           />
           <input
             type="password"
@@ -175,7 +175,7 @@ function AuthPage() {
             placeholder="Password"
             aria-label="Password"
             autoComplete={mode === "signin" ? "current-password" : "new-password"}
-            className="field w-full"
+            className="nb-field w-full"
           />
           {mode === "signup" && (
             <input
@@ -186,27 +186,23 @@ function AuthPage() {
               placeholder="Confirm password"
               aria-label="Confirm password"
               autoComplete="new-password"
-              className="field w-full"
+              className="nb-field w-full"
             />
           )}
-          <button
-            type="submit"
-            disabled={busy}
-            className="lift min-h-11 w-full rounded-lg border-2 border-ink bg-mint text-sm font-semibold text-on-tint disabled:cursor-wait disabled:opacity-60"
-          >
+          <button type="submit" disabled={busy} className="nb-btn w-full disabled:cursor-wait">
             {mode === "signin" ? "Sign in" : "Create account"}
           </button>
         </form>
 
-        <div className="my-4 flex items-center gap-3 text-xs uppercase tracking-widest text-muted-foreground">
-          <span className="h-0.5 flex-1 bg-ink/20" /> or <span className="h-0.5 flex-1 bg-ink/20" />
+        <div className="nb-label my-5 flex items-center gap-3">
+          <span className="h-0.5 flex-1 bg-border" /> or <span className="h-0.5 flex-1 bg-border" />
         </div>
 
         <button
           type="button"
           onClick={google}
           disabled={busy}
-          className="lift min-h-11 w-full rounded-lg border-2 border-ink bg-butter text-sm font-semibold text-on-tint disabled:cursor-wait disabled:opacity-60"
+          className="nb-btn w-full bg-card text-foreground disabled:cursor-wait"
         >
           Continue with Google
         </button>
@@ -214,7 +210,7 @@ function AuthPage() {
         <button
           type="button"
           onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-          className="mt-5 w-full text-sm text-foreground underline decoration-dashed underline-offset-4"
+          className="mt-5 w-full cursor-pointer text-sm font-bold text-foreground underline decoration-2 underline-offset-4"
         >
           {mode === "signin" ? "No account yet? Create one" : "Already have an account? Sign in"}
         </button>

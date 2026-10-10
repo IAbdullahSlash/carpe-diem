@@ -4,8 +4,8 @@
   "description": "A hand-drawn daily tracker for tasks, goals, habits and notes.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1f2421",
-  "theme_color": "#1f2421",
+  "background_color": "#fdf7c5",
+  "theme_color": "#fdf7c5",
   "icons": [
     {
       "src": "/favicon.png",

@@ -19,7 +19,7 @@ export function QuoteCard({ compact = false }: { compact?: boolean }) {
           type="button"
           aria-label="Show another quote"
           onClick={() => setOffset((o) => o + 1)}
-          className="lift grid h-9 w-9 place-items-center rounded-md border-2 border-ink bg-mint text-on-tint"
+          className="nb-btn nb-btn-sm nb-icon bg-mint text-on-tint"
         >
           <Shuffle className="h-4 w-4" />
         </button>
@@ -35,9 +35,7 @@ export function QuoteCard({ compact = false }: { compact?: boolean }) {
       >
         “{quote.text}”
       </blockquote>
-      <p className="mt-2 text-xs uppercase tracking-widest text-muted-foreground">
-        — {quote.author}
-      </p>
+      <p className="nb-label mt-3">— {quote.author}</p>
     </SketchCard>
   );
 }

@@ -5,13 +5,22 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Design system definition.
+ * Design system: neobrutalism, from the neobrutalism.dev "yellow" preset
+ * (npx shadcn@latest add https://neobrutalism.dev/r/styling/yellow.json).
+ *
+ * Rules every surface follows:
+ * - 2px solid --border outlines, --radius (5px) corners.
+ * - Hard offset shadows, no blur (--shadow). Pressing a button slides it
+ *   into its shadow; selected toggles stay pressed.
+ * - Flat fills: --main (yellow) for primary actions, the mint/sky/butter/
+ *   coral tints for categories, --secondary-background for surfaces.
+ * - Karla for all UI text; Caveat only for what the user writes (notes,
+ *   focus, quotes).
  *
  * The @theme inline block maps CSS custom properties to Tailwind utility
  * classes (e.g. --color-primary -> bg-primary, text-primary).
- *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
+ * The :root and .dark blocks define the actual values. All colors MUST use
+ * oklch format.
  *
  * To add a new semantic color:
  * 1. Add the variable to :root (light value) and .dark (dark value)
@@ -19,13 +28,13 @@
  */
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+  --radius-xl: calc(var(--radius) + 2px);
+  --radius-2xl: calc(var(--radius) + 4px);
+  --radius-3xl: calc(var(--radius) + 6px);
+  --radius-4xl: calc(var(--radius) + 8px);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -51,6 +60,7 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-chart-active-dot: var(--chart-active-dot);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -71,107 +81,131 @@
   --color-coral-ink: var(--coral-ink);
   --font-hand: "Caveat", "Segoe Script", cursive;
   --font-sans: "Karla", ui-sans-serif, system-ui, sans-serif;
-}
 
-:root {
-  --radius: 0.625rem;
-  --paper: oklch(0.976 0.014 92.5);
-  --paper-lines: oklch(0.9 0.02 240 / 45%);
-  --ink: oklch(0.23 0.02 265);
-  --ink-soft: oklch(0.46 0.02 265);
-  --mint: oklch(0.88 0.09 155);
-  --sky: oklch(0.87 0.07 235);
-  --butter: oklch(0.92 0.11 95);
-  --coral: oklch(0.83 0.1 25);
-  /* Text on mint/sky/butter/coral fills — stays dark in both themes. */
-  --on-tint: oklch(0.23 0.02 265);
-  /* Coral as text/icon colour; the --coral fill is too light to read. */
-  --coral-ink: oklch(0.52 0.15 27);
-  /* Behind dialogs; dark in both themes. */
-  --scrim: oklch(0.18 0.02 265 / 55%);
-  --background: var(--paper);
-  --foreground: var(--ink);
-  --card: oklch(0.995 0.008 92);
-  --card-foreground: var(--ink);
-  --popover: var(--card);
-  --popover-foreground: var(--ink);
-  --primary: var(--ink);
-  --primary-foreground: oklch(0.98 0.01 92);
-  --secondary: oklch(0.95 0.02 92);
-  --secondary-foreground: var(--ink);
-  --muted: oklch(0.94 0.015 92);
-  --muted-foreground: var(--ink-soft);
-  --accent: var(--butter);
-  --accent-foreground: var(--ink);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.34 0.02 265);
-  --input: oklch(0.34 0.02 265);
-  --ring: var(--ink-soft);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
+  /* neobrutalism.dev tokens, so components from that registry work as-is. */
+  --color-main: var(--main);
+  --color-secondary-background: var(--secondary-background);
+  --color-main-foreground: var(--main-foreground);
+  --color-overlay: var(--overlay);
+  --spacing-boxShadowX: var(--shadow-x);
+  --spacing-boxShadowY: var(--shadow-y);
+  --spacing-reverseBoxShadowX: calc(var(--shadow-x) * -1);
+  --spacing-reverseBoxShadowY: calc(var(--shadow-y) * -1);
+  --radius-base: var(--radius);
+  --font-weight-base: 500;
+  --font-weight-heading: 700;
+  --shadow-shadow: var(--shadow);
+  --animate-marquee: marquee 5s linear infinite;
+  --animate-marquee2: marquee2 5s linear infinite;
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+  @keyframes marquee2 {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
 }
 
 :root {
   color-scheme: light;
+  --radius: 5px;
+  --shadow-x: 4px;
+  --shadow-y: 4px;
+
+  /* Preset values (yellow). */
+  --background: oklch(0.968 0.065 102.3);
+  --secondary-background: oklch(1 0 0);
+  --main: oklch(0.86 0.176 92.4);
+  --main-foreground: oklch(0 0 0);
+  --foreground: oklch(0 0 0);
+  --border: oklch(0 0 0);
+  --ring: oklch(0 0 0);
+  --overlay: oklch(0 0 0 / 80%);
+  --shadow: var(--shadow-x) var(--shadow-y) 0 0 var(--border);
+  --chart-1: oklch(0.86 0.176 92.3);
+  --chart-2: oklch(0.663 0.181 277.1);
+  --chart-3: oklch(0.673 0.214 24.2);
+  --chart-4: oklch(0.775 0.168 162.9);
+  --chart-5: oklch(0.669 0.184 248.8);
+  --chart-active-dot: oklch(0 0 0);
+
+  /* App palette, derived from the preset. */
+  --paper: var(--background);
+  --paper-lines: oklch(0 0 0 / 12%);
+  --ink: var(--border);
+  --ink-soft: oklch(0.38 0 0);
+  --mint: oklch(0.86 0.12 160);
+  --sky: oklch(0.84 0.09 240);
+  --butter: var(--main);
+  --coral: oklch(0.8 0.12 25);
+  /* Text on mint/sky/butter/coral/main fills — stays black in both themes. */
+  --on-tint: oklch(0 0 0);
+  /* Coral as text/icon colour; the --coral fill is too light to read. */
+  --coral-ink: oklch(0.52 0.18 27);
+  /* Behind dialogs. */
+  --scrim: var(--overlay);
+
+  /* shadcn tokens, mapped onto the preset. */
+  --card: var(--secondary-background);
+  --card-foreground: var(--foreground);
+  --popover: var(--secondary-background);
+  --popover-foreground: var(--foreground);
+  --primary: var(--main);
+  --primary-foreground: var(--main-foreground);
+  --secondary: var(--secondary-background);
+  --secondary-foreground: var(--foreground);
+  --muted: oklch(0.94 0.04 100);
+  --muted-foreground: var(--ink-soft);
+  --accent: var(--main);
+  --accent-foreground: var(--main-foreground);
+  --destructive: oklch(0.6 0.22 25);
+  --destructive-foreground: oklch(1 0 0);
+  --input: var(--border);
+  --sidebar: var(--secondary-background);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--main);
+  --sidebar-primary-foreground: var(--main-foreground);
+  --sidebar-accent: var(--background);
+  --sidebar-accent-foreground: var(--foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
 }
 
 /* Native controls (date/time pickers, selects, scrollbars) follow the theme. */
 .dark {
   color-scheme: dark;
-  --paper: oklch(0.21 0.018 265);
-  --paper-lines: oklch(0.98 0.01 92 / 8%);
-  --ink: oklch(0.94 0.012 92);
-  --ink-soft: oklch(0.75 0.02 265);
-  --mint: oklch(0.68 0.09 155);
-  --sky: oklch(0.67 0.08 235);
-  --butter: oklch(0.72 0.1 95);
-  --coral: oklch(0.68 0.11 25);
-  --coral-ink: oklch(0.78 0.12 25);
-  --scrim: oklch(0.1 0.02 265 / 70%);
-  --background: var(--paper);
-  --foreground: var(--ink);
-  --card: oklch(0.26 0.02 265);
-  --card-foreground: var(--ink);
-  --popover: var(--card);
-  --popover-foreground: var(--ink);
-  --primary: var(--ink);
-  --primary-foreground: oklch(0.21 0.018 265);
-  --secondary: oklch(0.3 0.02 265);
-  --secondary-foreground: var(--ink);
-  --muted: oklch(0.3 0.02 265);
-  --muted-foreground: var(--ink-soft);
-  --accent: var(--butter);
-  --accent-foreground: oklch(0.21 0.018 265);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.94 0.012 92 / 65%);
-  --input: oklch(0.94 0.012 92 / 45%);
-  --ring: var(--ink-soft);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+
+  /* The preset ships light values only; these keep its black lines and
+     yellow main on a warm charcoal page. */
+  --background: oklch(0.25 0.012 95);
+  --secondary-background: oklch(0.32 0.012 95);
+  --main: oklch(0.86 0.176 92.4);
+  --main-foreground: oklch(0 0 0);
+  --foreground: oklch(0.95 0.01 95);
+  --border: oklch(0 0 0);
+  --ring: oklch(0.86 0.176 92.4);
+  --overlay: oklch(0 0 0 / 80%);
+
+  --paper-lines: oklch(1 0 0 / 7%);
+  --ink-soft: oklch(0.78 0.01 95);
+  --mint: oklch(0.76 0.12 160);
+  --sky: oklch(0.74 0.1 240);
+  --coral: oklch(0.72 0.13 25);
+  --coral-ink: oklch(0.78 0.14 25);
+
+  --muted: oklch(0.29 0.012 95);
+  --destructive: oklch(0.7 0.19 22);
+  --sidebar-accent: var(--muted);
 }
 
 @layer base {
@@ -183,17 +217,27 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    background-image:
-      radial-gradient(var(--paper-lines) 1px, transparent 1px);
+    font-weight: var(--font-weight-base);
+    background-image: radial-gradient(var(--paper-lines) 1px, transparent 1px);
     background-size: 22px 22px;
-    caret-color: var(--ink);
-    accent-color: var(--ink);
-    scrollbar-color: var(--ink-soft) transparent;
+    caret-color: var(--foreground);
+    accent-color: var(--main);
+    scrollbar-color: var(--border) transparent;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: var(--font-weight-heading);
+    letter-spacing: -0.01em;
   }
 
   ::selection {
-    background-color: var(--butter);
-    color: var(--on-tint);
+    background-color: var(--main);
+    color: var(--main-foreground);
   }
 
   :focus-visible {
@@ -219,62 +263,213 @@
   }
 }
 
-@utility sketch {
-  border: 2px solid var(--ink);
-  border-radius: 14px 22px 16px 20px;
-  background-color: var(--color-card);
-  box-shadow: 4px 5px 0 0 var(--ink);
-  transition:
-    transform 200ms ease,
-    box-shadow 200ms ease;
+/* Surfaces: cards, dialogs, popovers, toasts. */
+@utility nb-card {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--card);
+  color: var(--card-foreground);
+  box-shadow: var(--shadow);
 }
 
-@utility sketch-hover {
-  &:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 7px 8px 0 0 var(--ink);
+/*
+ * Buttons. Defaults to the yellow main fill; add a bg-* class for others
+ * (bg-card for neutral, bg-mint/sky/coral for categories). Hovering or
+ * pressing slides the button into its shadow; aria-pressed / aria-checked /
+ * aria-current keep it there.
+ */
+@utility nb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  min-height: 2.75rem;
+  padding-inline: 1rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--main);
+  color: var(--main-foreground);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+  cursor: pointer;
+  /* Built from the offsets (not --shadow) so nb-btn-sm can shrink them. */
+  box-shadow: var(--shadow-x) var(--shadow-y) 0 0 var(--border);
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
+  &:hover:not(:disabled),
+  &[aria-pressed="true"],
+  &[aria-checked="true"],
+  &[aria-current="page"] {
+    transform: translate(var(--shadow-x), var(--shadow-y));
+    box-shadow: none;
+  }
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  & svg {
+    flex-shrink: 0;
   }
 }
 
-@utility marker {
-  background-image: linear-gradient(
-    100deg,
-    transparent 2%,
-    var(--butter) 2%,
-    var(--butter) 96%,
-    transparent 96%
-  );
-  background-repeat: no-repeat;
-  color: var(--on-tint);
-  padding: 0 0.2em;
+/* Smaller button for card headers, filters and chips. */
+@utility nb-btn-sm {
+  min-height: 2.25rem;
+  padding-inline: 0.75rem;
+  font-size: 0.75rem;
+  --shadow-x: 2px;
+  --shadow-y: 2px;
 }
 
+/* Square icon-only button; combine with nb-btn (and nb-btn-sm for small). */
+@utility nb-icon {
+  width: 2.75rem;
+  min-width: 2.75rem;
+  padding-inline: 0;
+  &:where(.nb-btn-sm) {
+    width: 2.25rem;
+    min-width: 2.25rem;
+  }
+}
+
+/* Borderless icon button inside list rows (delete, star, unpin). */
+@utility nb-ghost {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    color 120ms ease;
+  &:hover {
+    border-color: currentColor;
+    color: var(--foreground);
+  }
+}
+
+/* Segmented control: theme switcher, tabs, filters. */
+@utility nb-segment {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--card);
+  box-shadow: 2px 2px 0 0 var(--border);
+}
+
+@utility nb-segment-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  min-height: 2rem;
+  min-width: 2rem;
+  padding-inline: 0.625rem;
+  border: 2px solid transparent;
+  border-radius: calc(var(--radius) - 2px);
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  &:hover {
+    background-color: var(--muted);
+  }
+  &[aria-pressed="true"],
+  &[data-state="active"] {
+    border-color: var(--border);
+    background-color: var(--main);
+    color: var(--main-foreground);
+  }
+}
+
+/* Text inputs, selects and textareas. */
+@utility nb-field {
+  min-height: 2.75rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--secondary-background);
+  padding-inline: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--foreground);
+  &::placeholder {
+    color: var(--muted-foreground);
+  }
+  &:is(textarea) {
+    padding-block: 0.5rem;
+  }
+}
+
+/* Small uppercase tag: priorities, countdowns, pinned dates. */
+@utility nb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.0625rem 0.375rem;
+  border: 2px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Small uppercase section label. */
+@utility nb-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+/* Highlighted headline word(s): a flat main-colour block. */
+@utility marker {
+  background-color: var(--main);
+  color: var(--main-foreground);
+  padding: 0 0.2em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* Handwriting, for content the user wrote. */
 @utility hand {
   font-family: var(--font-hand);
   letter-spacing: 0.01em;
 }
 
-/* Hand-drawn lift on hover, settles back when pressed. */
-@utility lift {
-  transition: transform 150ms ease;
-  &:hover:not(:disabled) {
-    transform: translateY(-2px);
-  }
-  &:active:not(:disabled) {
-    transform: translateY(0);
-  }
+body,
+.scrollbar {
+  --sb-track-color: var(--secondary-background);
+  --sb-thumb-color: var(--border);
 }
 
-/* Text inputs, selects and textareas inside cards and forms. */
-@utility field {
-  min-height: 2.75rem;
-  border: 2px solid var(--ink);
-  border-radius: var(--radius);
-  background-color: transparent;
-  padding-inline: 0.75rem;
-  font-size: 0.875rem;
-  color: var(--foreground);
-  &::placeholder {
-    color: var(--muted-foreground);
+.scrollbar::-webkit-scrollbar {
+  width: 16px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .scrollbar {
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
   }
 }
