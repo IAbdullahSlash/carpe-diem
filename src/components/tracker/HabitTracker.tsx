@@ -27,7 +27,7 @@ export function HabitTracker() {
               <div
                 key={day}
                 className={cn(
-                  "w-7 text-center",
+                  "w-6 text-center",
                   day === today ? "font-bold text-foreground" : "text-muted-foreground",
                 )}
               >
@@ -36,7 +36,7 @@ export function HabitTracker() {
               </div>
             );
           })}
-          <span className="ml-1 w-8" />
+          <span className="ml-1 w-6" />
         </div>
       </div>
       <ul className="space-y-3 border-t-2 border-border pt-3">
@@ -61,7 +61,7 @@ export function HabitTracker() {
                     aria-label={`${habit.title} on ${l.weekday} ${l.day} ${l.month}`}
                     onClick={() => toggleHabit(habit.id, day)}
                     className={cn(
-                      "grid h-7 w-7 place-items-center rounded-sm border-2 border-border transition-colors",
+                      "grid h-6 w-6 place-items-center rounded-sm border-2 border-border transition-colors",
                       active ? "bg-mint text-on-tint" : "bg-card hover:bg-mint/40",
                       day === today && "ring-2 ring-ring ring-offset-1 ring-offset-background",
                     )}
@@ -74,7 +74,7 @@ export function HabitTracker() {
                 type="button"
                 aria-label={`Delete ${habit.title}`}
                 onClick={() => removeHabit(habit.id)}
-                className="nb-ghost ml-1 hover:text-destructive"
+                className="nb-ghost ml-1 h-6 w-6 hover:text-destructive"
               >
                 <Trash2 className="h-4 w-4" />
               </button>

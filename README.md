@@ -4,6 +4,8 @@
 
 A personal productivity app built to help you make the most of today.
 
+![The Carpe Diem dashboard: today's focus, mood, notes, tasks, progress, goals, habits and what's coming up](docs/home.jpg)
+
 ---
 
 ## What does "Carpe Diem" mean?

@@ -19,8 +19,9 @@ export function SketchCard({
   return (
     <section className={cn("nb-card p-4 sm:p-5", className)}>
       {(title || action) && (
-        <header className="mb-4 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b-2 border-border pb-3">
-          <div className="flex min-w-0 items-center gap-2">
+        <header className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b-2 border-border pb-3">
+          {/* The action drops below the title rather than squeezing it. */}
+          <div className="flex min-w-[10rem] flex-1 items-center gap-2">
             {icon ? (
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-base border-2 border-border bg-main text-main-foreground [&_svg]:h-4 [&_svg]:w-4">
                 {icon}
